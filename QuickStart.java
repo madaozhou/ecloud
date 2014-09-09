@@ -28,6 +28,11 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import javax.json.*;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -39,24 +44,44 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.http.entity.ByteArrayEntity;
 
 public class QuickStart {
+    public static final String URL =
+        "http://115.29.204.44:8080/ecloud/v1/dev/ctl/getver/";
 
     public static void main(String[] args) throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
-            HttpGet httpGet = new HttpGet("http://www.baidu.com");
-            CloseableHttpResponse response1 = httpclient.execute(httpGet);
-            // The underlying HTTP connection is still held by the response object
-            // to allow the response content to be streamed directly from the network socket.
-            // In order to ensure correct deallocation of system resources
-            // the user MUST call CloseableHttpResponse#close() from a finally clause.
-            // Please note that if response content is not fully consumed the underlying
-            // connection cannot be safely re-used and will be shut down and discarded
-            // by the connection manager.
+            HttpPost httpPost = new HttpPost(URL);
+            //List <NameValuePair> nvps = new ArrayList <NameValuePair>();
+            //nvps.add(new BasicNameValuePair("auth_token", "test"));
+            //nvps.add(new BasicNameValuePair("device", "/dev/ctl/demo01/gw01"));
+            //httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+            JsonObject jobj = Json.createObjectBuilder()
+                .add("auth_token", "test")
+                .add("device", "/dev/ctl/demo01/gw01")
+                .build();
+            httpPost.setEntity(new ByteArrayEntity(
+                        jobj.toString().getBytes("UTF8")));
+            CloseableHttpResponse response1 = httpclient.execute(httpPost);
             try {
                 System.out.println(response1.getStatusLine());
                 HttpEntity entity1 = response1.getEntity();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(
+                        entity1.getContent()));
+                System.out.println("=============================");
+                System.out.println("Contents of post entity");
+                System.out.println("=============================");
+                String lines;
+                while ((lines = reader.readLine()) != null) {
+                    System.out.println(lines);
+                }
+                reader.close();
+                System.out.println("=============================");
+                System.out.println("Contents of post entity ends");
+                System.out.println("=============================");
+
                 // do something useful with the response body
                 // and ensure it is fully consumed
                 EntityUtils.consume(entity1);
