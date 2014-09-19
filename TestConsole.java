@@ -3,6 +3,7 @@ import java.io.PrintWriter;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
 import org.apache.commons.cli2.commandline.*;
+import org.apache.commons.cli2.util.*;
 
 public class TestConsole {
     public static void main(String[] args) throws Exception{
@@ -26,7 +27,7 @@ public class TestConsole {
         try {
             cl = parser.parse(args);
             if (cl.hasOption(help)) {
-                System.out.println("help information");
+                hf.print();
                 return 1;
             }
             if (cl.hasOption(quit)) {
@@ -303,6 +304,14 @@ public class TestConsole {
                 .create();
         parser = new Parser();
         parser.setGroup(options);
+        helpPage();
+    }
+
+    private void helpPage() {
+        hf = new HelpFormatter();
+        hf.setShellCommand("Ecloud");
+        hf.setGroup(options);
+        hf.getFullUsageSettings().add(DisplaySetting.DISPLAY_ALIASES);
     }
 
     private DefaultOptionBuilder oBuilder;
@@ -328,4 +337,5 @@ public class TestConsole {
     private Option Filec2d;
     private Option Filed2c;
     private Option RpcCall;
+    private HelpFormatter hf;
 }
