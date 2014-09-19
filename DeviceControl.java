@@ -119,6 +119,10 @@ public class DeviceControl{
         json_str = "{\"device\":\"/dev/ctl/demo01/gw01\",\"auth_token\":\"test\"}";
         DeviceControl devicecontrol = new DeviceControl();
         devicecontrol.GetVer(json_str);
+        devicecontrol.GetCfg(json_str);
+        devicecontrol.Ping(json_str);
+        devicecontrol.GetAppList(json_str);
+        devicecontrol.Reboot(json_str);
     }
 
     private void ApiResponseParser(String URL, String json_str) throws Exception{
@@ -165,9 +169,11 @@ public class DeviceControl{
                         time_out = jobj.getInt("time_out");
                     if (retcode > 10000) {
                         System.out.printf("Error code:  %d\n", retcode);
+                        System.out.println();
                     }
                     else if (retcode == 0) {
                         System.out.println("Success.");
+                        System.out.println();
                     }
                     else if (retcode == 1) {
                         try {
