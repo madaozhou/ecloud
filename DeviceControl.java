@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ByteArrayInputStream;
 import java.lang.Thread;
+import java.security.MessageDigest;
 
 import javax.json.*;
 
@@ -23,6 +24,11 @@ import org.apache.http.entity.ByteArrayEntity;
 public class DeviceControl{
     public static final String BaseUrl =
         "http://115.29.204.44:8080/ecloud/";
+
+    public void Login(String json_str) throws Exception{
+        String URL = BaseUrl + "v1/admin/user/userlogin1";
+        ApiResponseParser(URL, json_str);
+    }
 
     public String GetAPIStatus(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/getapistatus";
@@ -115,14 +121,23 @@ public class DeviceControl{
     }
 
     public static void main(String[] args) throws Exception{
-        String json_str;
-        json_str = "{\"device\":\"/dev/ctl/demo01/gw01\",\"auth_token\":\"test\"}";
         DeviceControl devicecontrol = new DeviceControl();
-        devicecontrol.GetVer(json_str);
-        devicecontrol.GetCfg(json_str);
-        devicecontrol.Ping(json_str);
-        devicecontrol.GetAppList(json_str);
-        devicecontrol.Reboot(json_str);
+        String json_str;
+        JsonObject jobj = Json.createObjectBuilder()
+            .add("username", devicecontrol.username)
+            .build();
+        json_str = jobj.toString();
+        devicecontrol.Login(json_str);
+       // jobj = Json.createObjectBuilder()
+       //     .add("auth_token", devicecontrol.auth_token)
+       //     .add("device", "/dev/ctl/demo01/gw01")
+       //     .build();
+       // json_str = jobj.toString();
+       // devicecontrol.GetVer(json_str);
+       // devicecontrol.GetCfg(json_str);
+       // devicecontrol.Ping(json_str);
+       // devicecontrol.GetAppList(json_str);
+       // devicecontrol.Reboot(json_str);
     }
 
     private void ApiResponseParser(String URL, String json_str) throws Exception{
@@ -133,12 +148,9 @@ public class DeviceControl{
             System.out.println("Post request entity:");
             System.out.println(json_str);
             HttpPost httpPost = new HttpPost(URL);
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(new ByteArrayInputStream(json_str.getBytes())));
-            JsonReader jsonReader = Json.createReader(reader);
+            ByteArrayInputStream in = new ByteArrayInputStream(json_str.getBytes());
+            JsonReader jsonReader = Json.createReader(in);
             JsonObject jobj = jsonReader.readObject();
-            auth_token = "\"" + jobj.getString("auth_token") + "\"";
-            reader.close();
             httpPost.setEntity(new ByteArrayEntity(
                         jobj.toString().getBytes("UTF8")));
             CloseableHttpResponse apiResponse = httpClient.execute(httpPost);
@@ -146,11 +158,9 @@ public class DeviceControl{
                 System.out.println(apiResponse.getStatusLine());
                 if (apiResponse.getStatusLine().getStatusCode() == 200) {
                     HttpEntity entity = apiResponse.getEntity();
-                    reader = new BufferedReader(new InputStreamReader(
-                                entity.getContent()));
-                    jsonReader = Json.createReader(reader);
+                    InputStream entityIn = entity.getContent();
+                    jsonReader = Json.createReader(entityIn);
                     jobj = jsonReader.readObject();
-                    reader.close();
                     System.out.println("Recieved JSON:");
                     if (URL.contains("getapistatus")) {
                         status = jobj.toString();
@@ -161,14 +171,26 @@ public class DeviceControl{
                         System.out.println(respones);
                     }
                     EntityUtils.consume(entity);
-                    if (jobj.containsKey("retcode"))
-                        retcode = jobj.getInt("retcode");
-                    if (jobj.containsKey("api_qid"))
-                        api_qid = "\"" + jobj.getString("api_qid") + "\"";
-                    if (jobj.containsKey("time_out"))
-                        time_out = jobj.getInt("time_out");
+                    //get all values in json object
+                    retcode = jobj.getInt("retcode", -1);
+                    api_qid = jobj.getString("api_qid", "-1");
+                    time_out = jobj.getInt("time_out", -1);
+                    auth_token = jobj.getString("auth_token", "-1");
+                    login_id = jobj.getString("login_id", "-1");
+                    challenge = jobj.getString("challenge", "-1");
+                    algorithm = jobj.getString("algorithm", "-1");
+                    salt = jobj.getString("salt", "-1");
                     if (retcode > 10000) {
                         System.out.printf("Error code:  %d\n", retcode);
+                        System.out.println();
+                    }
+                    else if (retcode == 0 && jobj.containsKey("algorithm")) {
+                        System.out.println("Success.");
+                        login_response();
+                        System.out.println();
+                    }
+                    else if (retcode == 0 && jobj.containsKey("response")) {
+                        System.out.println("Success.");
                         System.out.println();
                     }
                     else if (retcode == 0) {
@@ -181,8 +203,11 @@ public class DeviceControl{
                         } catch(InterruptedException e) {
                             System.out.println(e.toString());
                         }
-                        String tmp = "{" + "\"api_qid\"" + ":" + api_qid + ","
-                            + "\"auth_token\"" + ":" + auth_token + "}";
+                        JsonObject tmpJobj = Json.createObjectBuilder()
+                            .add("api_qid", api_qid)
+                            .add("auth_token", auth_token)
+                            .build();
+                        String tmp = tmpJobj.toString();
                         GetAPIStatus(tmp);
                     }
                     else {
@@ -197,11 +222,55 @@ public class DeviceControl{
         }
     }
 
+    private void login_response() throws Exception{
+        String str1 = password + salt;
+        System.out.println(str1);
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
+            messageDigest.update(str1.getBytes());
+            String hash1 = getFormattedText(messageDigest.digest());
+            System.out.println(hash1);
+            String str2 = hash1 + challenge;
+            System.out.println(str2);
+            messageDigest.update(str2.getBytes());
+            String hash2 = getFormattedText(messageDigest.digest());
+            System.out.println(hash2);
+            JsonObject jobj = Json.createObjectBuilder()
+                .add("username", username)
+                .add("login_id", login_id)
+                .add("response", hash2)
+                .build();
+            String URL = BaseUrl + "v1/admin/user/userlogin2";
+            String json_str = jobj.toString();
+            ApiResponseParser(URL, json_str);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String getFormattedText(byte[] bytes) {
+        int len = bytes.length;
+        StringBuilder buf = new StringBuilder(len * 2);
+        for (int i = 0; i < len; i++) {
+            buf.append(HEX_DIGITS[(bytes[i] >> 4) & 0x0f]);
+            buf.append(HEX_DIGITS[bytes[i] & 0x0f]);
+        }
+        return buf.toString();
+    }
+
     private int retcode;
     private String api_qid;
     private int time_out;
-    private String auth_token;
+    public String auth_token;
     private String respones;
     private String status;
+    public String username = "admin";
+    private String password = "intel123";
+    private String login_id;
+    private String challenge;
+    private String algorithm;
+    private String salt;
+    private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6',
+        '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 }
 
