@@ -4,18 +4,19 @@ import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
 import org.apache.commons.cli2.commandline.*;
 import org.apache.commons.cli2.util.*;
+import javax.json.*;
 
 public class TestConsole {
     public static void main(String[] args) throws Exception{
         TestConsole cli = new TestConsole();
-        Console cons = System.console();
-        if (cons != null) {
-            cons.printf("Hi, welcome to Ecloud!\n");
-            PrintWriter writer = cons.writer();
+        cli.cons = System.console();
+        if (cli.cons != null) {
+            cli.cons.printf("Hi, welcome to Ecloud!\n");
+            PrintWriter writer = cli.cons.writer();
             while (true) {
                 writer.write("Ecloud ");
-                cons.flush();
-                String str1 = cons.readLine();
+                cli.cons.flush();
+                String str1 = cli.cons.readLine();
                 String[] inputArgs = str1.split(" ");
                 if (cli.engine(inputArgs) == 0)
                     break;
@@ -33,6 +34,21 @@ public class TestConsole {
             if (cl.hasOption(quit)) {
                 System.out.println("bye");
                 return 0;
+            }
+            if (cl.hasOption(Login)) {
+                System.out.printf("username:");
+                String username = cons.readLine();
+                char passwordArray[] = cons.readPassword("password:");
+                String password = new String(passwordArray, 0, passwordArray.length);
+                dc.setUserName(username);
+                dc.setPassWord(password);
+                String json_str;
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("username", username)
+                    .build();
+                json_str = jobj.toString();
+                dc.Login(json_str);
+                return 1;
             }
             if (cl.hasOption(GetVer)) {
                 String jsonStr = (String)cl.getValue(GetVer);
@@ -127,6 +143,17 @@ public class TestConsole {
                 .withShortName("quit")
                 .withShortName("q")
                 .withDescription("quit cli")
+                .create();
+        Login =
+            oBuilder
+                .withShortName("Login")
+                .withDescription("Login into energy cloud system")
+               // .withArgument(
+               //         aBuilder
+               //             .withName("jsonStr")
+               //             .withMinimum(1)
+               //             .withMaximum(1)
+               //             .create())
                 .create();
         GetVer =
             oBuilder
@@ -287,6 +314,7 @@ public class TestConsole {
                 .withName("options")
                 .withOption(help)
                 .withOption(quit)
+                .withOption(Login)
                 .withOption(GetVer)
                 .withOption(GetCfg)
                 .withOption(SetCfg)
@@ -314,6 +342,7 @@ public class TestConsole {
         hf.getFullUsageSettings().add(DisplaySetting.DISPLAY_ALIASES);
     }
 
+    private Console cons;
     private DefaultOptionBuilder oBuilder;
     private ArgumentBuilder aBuilder;
     private GroupBuilder gBuilder;
@@ -323,6 +352,7 @@ public class TestConsole {
     private DeviceControl dc;
     private Option help;
     private Option quit;
+    private Option Login;
     private Option GetVer;
     private Option GetCfg;
     private Option SetCfg;

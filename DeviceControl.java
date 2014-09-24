@@ -120,24 +120,42 @@ public class DeviceControl{
         return respones;
     }
 
-    public static void main(String[] args) throws Exception{
-        DeviceControl devicecontrol = new DeviceControl();
-        String json_str;
-        JsonObject jobj = Json.createObjectBuilder()
-            .add("username", devicecontrol.username)
-            .build();
-        json_str = jobj.toString();
-        devicecontrol.Login(json_str);
-       // jobj = Json.createObjectBuilder()
-       //     .add("auth_token", devicecontrol.auth_token)
-       //     .add("device", "/dev/ctl/demo01/gw01")
-       //     .build();
-       // json_str = jobj.toString();
-       // devicecontrol.GetVer(json_str);
-       // devicecontrol.GetCfg(json_str);
-       // devicecontrol.Ping(json_str);
-       // devicecontrol.GetAppList(json_str);
-       // devicecontrol.Reboot(json_str);
+   // public static void main(String[] args) throws Exception{
+   //     DeviceControl devicecontrol = new DeviceControl();
+   //     devicecontrol.setUserName("admin");
+   //     devicecontrol.setPassWord("intel123");
+   //     String json_str;
+   //     JsonObject jobj = Json.createObjectBuilder()
+   //         .add("username", devicecontrol.getUserName())
+   //         .build();
+   //     json_str = jobj.toString();
+   //     devicecontrol.Login(json_str);
+   //     jobj = Json.createObjectBuilder()
+   //         .add("auth_token", devicecontrol.getToken())
+   //         .add("device", "/dev/ctl/demo01/gw01")
+   //         .build();
+   //     json_str = jobj.toString();
+   //     devicecontrol.GetVer(json_str);
+   //     devicecontrol.GetCfg(json_str);
+   //     devicecontrol.Ping(json_str);
+   //     devicecontrol.GetAppList(json_str);
+   //     devicecontrol.Reboot(json_str);
+   // }
+
+    public void setUserName(String username) {
+        this.username = username;
+    }
+
+    public void setPassWord(String password) {
+        this.password = password;
+    }
+
+    public String getUserName() {
+        return username;
+    }
+
+    public String getToken() {
+        return auth_token;
     }
 
     private void ApiResponseParser(String URL, String json_str) throws Exception{
@@ -175,7 +193,7 @@ public class DeviceControl{
                     retcode = jobj.getInt("retcode", -1);
                     api_qid = jobj.getString("api_qid", "-1");
                     time_out = jobj.getInt("time_out", -1);
-                    auth_token = jobj.getString("auth_token", "-1");
+                    auth_token = jobj.getString("auth_token", auth_token);
                     login_id = jobj.getString("login_id", "-1");
                     challenge = jobj.getString("challenge", "-1");
                     algorithm = jobj.getString("algorithm", "-1");
@@ -258,14 +276,15 @@ public class DeviceControl{
         return buf.toString();
     }
 
+
     private int retcode;
     private String api_qid;
     private int time_out;
-    public String auth_token;
+    private String auth_token;
     private String respones;
     private String status;
-    public String username = "admin";
-    private String password = "intel123";
+    private String username;
+    private String password;
     private String login_id;
     private String challenge;
     private String algorithm;
