@@ -8,10 +8,9 @@ import jline.console.completer.Completer;
 import jline.console.completer.FileNameCompleter;
 import jline.console.completer.StringsCompleter;
 
-import org.apache.commons.cli2.*;
-import org.apache.commons.cli2.builder.*;
-import org.apache.commons.cli2.commandline.*;
-import org.apache.commons.cli2.util.*;
+import org.apache.commons.cli.*;
+import org.apache.commons.cli.Options;
+
 import javax.json.*;
 
 public class TestJline {
@@ -24,6 +23,7 @@ public class TestJline {
             cli.cons.setPrompt("Ecloud ");
             while (true) {
                 String str1 = cli.cons.readLine();
+                System.out.println(str1);
                 String[] inputArgs = str1.split(" ");
                 if (cli.engine(inputArgs) == 0)
                     break;
@@ -32,17 +32,19 @@ public class TestJline {
     }
 
     public int engine(String[] args) throws Exception{
+        parser = new BasicParser();
         try {
-            cl = parser.parse(args);
-            if (cl.hasOption(help)) {
-                hf.print();
+            System.out.println(args[0]);
+            cl = parser.parse(options, args);
+            if (cl.hasOption("help")) {
+                helpPage();
                 return 1;
             }
-            if (cl.hasOption(quit)) {
+            if (cl.hasOption("quit")) {
                 System.out.println("bye");
                 return 0;
             }
-            if (cl.hasOption(Login)) {
+            if (cl.hasOption("Login")) {
                 cons.setPrompt("username:");
                 String username = cons.readLine();
                 cons.setPrompt(null);
@@ -63,327 +65,252 @@ public class TestJline {
                 else {
                     System.out.println("Login fail!");
                 }
-                cons.setPrompt("Ecloud");
+                cons.setPrompt("Ecloud ");
                 return 1;
             }
-            if (cl.hasOption(GetVer)) {
-                String jsonStr = (String)cl.getValue(GetVer);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(GetCfg)) {
-                String jsonStr = (String)cl.getValue(GetCfg);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(SetCfg)) {
-                String jsonStr = (String)cl.getValue(SetCfg);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(Ping)) {
-                String jsonStr = (String)cl.getValue(Ping);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(UpdateFirmware)) {
-                String jsonStr = (String)cl.getValue(UpdateFirmware);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(system)) {
-                String jsonStr = (String)cl.getValue(system);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(GetAppList)) {
-                String jsonStr = (String)cl.getValue(GetAppList);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(StartApp)) {
-                String jsonStr = (String)cl.getValue(StartApp);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(StopApp)) {
-                String jsonStr = (String)cl.getValue(StopApp);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(InstallApp)) {
-                String jsonStr = (String)cl.getValue(InstallApp);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(Reboot)) {
-                String jsonStr = (String)cl.getValue(Reboot);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(Filec2d)) {
-                String jsonStr = (String)cl.getValue(Filec2d);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(Filed2c)) {
-                String jsonStr = (String)cl.getValue(Filed2c);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(RpcCall)) {
-                String jsonStr = (String)cl.getValue(RpcCall);
-                dc.GetVer(jsonStr);
-                return 1;
-            }
-            if (cl.hasOption(ListProjects)) {
-                dc.ListProjects();
-                return 1;
-            }
-        } catch (OptionException e) {
-            e.printStackTrace();
+           // if (cl.hasOption(GetVer)) {
+           //     String jsonStr = (String)cl.getValue(GetVer);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(GetCfg)) {
+           //     String jsonStr = (String)cl.getValue(GetCfg);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(SetCfg)) {
+           //     String jsonStr = (String)cl.getValue(SetCfg);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(Ping)) {
+           //     String jsonStr = (String)cl.getValue(Ping);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(UpdateFirmware)) {
+           //     String jsonStr = (String)cl.getValue(UpdateFirmware);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(system)) {
+           //     String jsonStr = (String)cl.getValue(system);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(GetAppList)) {
+           //     String jsonStr = (String)cl.getValue(GetAppList);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(StartApp)) {
+           //     String jsonStr = (String)cl.getValue(StartApp);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(StopApp)) {
+           //     String jsonStr = (String)cl.getValue(StopApp);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(InstallApp)) {
+           //     String jsonStr = (String)cl.getValue(InstallApp);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(Reboot)) {
+           //     String jsonStr = (String)cl.getValue(Reboot);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(Filec2d)) {
+           //     String jsonStr = (String)cl.getValue(Filec2d);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(Filed2c)) {
+           //     String jsonStr = (String)cl.getValue(Filed2c);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(RpcCall)) {
+           //     String jsonStr = (String)cl.getValue(RpcCall);
+           //     dc.GetVer(jsonStr);
+           //     return 1;
+           // }
+           // if (cl.hasOption(ListProjects)) {
+           //     dc.ListProjects();
+           //     return 1;
+           // }
+        } catch (ParseException e) {
+            System.err.println("Parsing failed. Reason: " + e.getMessage());
         }
         System.out.println("Unknown cmd");
         return 1;
     }
 
     public TestJline() {
-        oBuilder = new DefaultOptionBuilder();
-        aBuilder = new ArgumentBuilder();
-        gBuilder = new GroupBuilder();
         dc = new DeviceControl();
+        options = new Options();
         help =
-            oBuilder
-                .withShortName("help")
-                .withShortName("h")
+            OptionBuilder
+                .withLongOpt("help")
                 .withDescription("print help information")
-                .create();
+                .create("h");
         quit =
-            oBuilder
-                .withShortName("quit")
-                .withShortName("q")
+            OptionBuilder
+                .withLongOpt("quit")
                 .withDescription("quit cli")
-                .create();
+                .create("q");
         Login =
-            oBuilder
-                .withShortName("Login")
+            OptionBuilder
+                .withLongOpt("Login")
                 .withDescription("Login into energy cloud system")
                 .create();
         GetVer =
-            oBuilder
-                .withShortName("GetVer")
+            OptionBuilder
+                .withLongOpt("GetVer")
                 .withDescription("get version of gateway")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device")
+                .hasArgs(1)
                 .create();
         GetCfg =
-            oBuilder
-                .withShortName("GetCfg")
+            OptionBuilder
+                .withLongOpt("GetCfg")
                 .withDescription("get configuration of gateway")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device")
+                .hasArgs(1)
                 .create();
         SetCfg =
-            oBuilder
-                .withShortName("SetCfg")
+            OptionBuilder
+                .withLongOpt("SetCfg")
                 .withDescription("configure gateway")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device> <config")
+                .hasArgs(2)
                 .create();
         Ping =
-            oBuilder
-                .withShortName("Ping")
+            OptionBuilder
+                .withLongOpt("Ping")
                 .withDescription("detect device's status")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device")
+                .hasArgs(1)
                 .create();
         UpdateFirmware =
-            oBuilder
-                .withShortName("UpdateFirmware")
+            OptionBuilder
+                .withLongOpt("UpdateFirmware")
                 .withDescription("update firmware of gateway")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device> <srcaddr> <version")
+                .hasArgs(3)
                 .create();
         system =
-            oBuilder
-                .withShortName("system")
+            OptionBuilder
+                .withLongOpt("system")
                 .withDescription("run system cmd")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device> <cmd")
+                .hasArgs(2)
                 .create();
         GetAppList =
-            oBuilder
-                .withShortName("GetAppList")
+            OptionBuilder
+                .withLongOpt("GetAppList")
                 .withDescription("get application list")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device")
+                .hasArgs(1)
                 .create();
         StartApp =
-            oBuilder
-                .withShortName("StartApp")
+            OptionBuilder
+                .withLongOpt("StartApp")
                 .withDescription("start application")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device> <name> <params")
+                .hasArgs(3)
                 .create();
         StopApp =
-            oBuilder
-                .withShortName("StopApp")
+            OptionBuilder
+                .withLongOpt("StopApp")
                 .withDescription("stop application")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device> <name")
+                .hasArgs(2)
                 .create();
         InstallApp =
-            oBuilder
-                .withShortName("InstallApp")
+            OptionBuilder
+                .withLongOpt("InstallApp")
                 .withDescription("install application")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device> <apppath")
+                .hasArgs(2)
                 .create();
         Reboot =
-            oBuilder
-                .withShortName("Reboot")
+            OptionBuilder
+                .withLongOpt("Reboot")
                 .withDescription("reboot device")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device")
+                .hasArgs(1)
                 .create();
         Filec2d =
-            oBuilder
-                .withShortName("Filec2d")
+            OptionBuilder
+                .withLongOpt("Filec2d")
                 .withDescription("tansfer file from cloud to device")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device> <src> <dest")
+                .hasArgs(3)
                 .create();
         Filed2c =
-            oBuilder
-                .withShortName("Filed2c")
+            OptionBuilder
+                .withLongOpt("Filed2c")
                 .withDescription("tansfer file from device to cloud")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device> <src> <dest")
+                .hasArgs(3)
                 .create();
         RpcCall =
-            oBuilder
-                .withShortName("RpcCall")
+            OptionBuilder
+                .withLongOpt("RpcCall")
                 .withDescription("call device's RPC")
-                .withArgument(
-                        aBuilder
-                            .withName("jsonStr")
-                            .withMinimum(1)
-                            .withMaximum(1)
-                            .create())
+                .withArgName("device> <cmd")
+                .hasArgs(2)
                 .create();
 
-        AddProjects =
-            oBuilder
-                .withShortName("AddProjects")
-                .withDescription("add projects")
-                .withArgument(
-                        aBuilder
-                            .withDescription("name vendor info tag")
-                            .withName("arg")
-                            .withMinimum(4)
-                            .withMaximum(4)
-                            .create())
-                .create();
         ListProjects =
-            oBuilder
-                .withShortName("ListProjects")
+            OptionBuilder
+                .withLongOpt("ListProjects")
                 .withDescription("list existed projects")
                 .create();
-        options =
-            gBuilder
-                .withName("options")
-                .withOption(help)
-                .withOption(quit)
-                .withOption(Login)
-                .withOption(GetVer)
-                .withOption(GetCfg)
-                .withOption(SetCfg)
-                .withOption(Ping)
-                .withOption(UpdateFirmware)
-                .withOption(system)
-                .withOption(GetAppList)
-                .withOption(StartApp)
-                .withOption(StopApp)
-                .withOption(InstallApp)
-                .withOption(Reboot)
-                .withOption(Filec2d)
-                .withOption(Filed2c)
-                .withOption(RpcCall)
-                .withOption(AddProjects)
-                .withOption(ListProjects)
+        AddProjects =
+            OptionBuilder
+                .withLongOpt("AddProjects")
+                .withDescription("add projects")
+                .withArgName("name> <vendor> <info> <tag")
+                .hasArgs(4)
                 .create();
-        parser = new Parser();
-        parser.setGroup(options);
-        helpPage();
+        options.addOption(help);
+        options.addOption(quit);
+        options.addOption(Login);
+        options.addOption(GetVer);
+        options.addOption(GetCfg);
+        options.addOption(SetCfg);
+        options.addOption(Ping);
+        options.addOption(UpdateFirmware);
+        options.addOption(system);
+        options.addOption(GetAppList);
+        options.addOption(StartApp);
+        options.addOption(StopApp);
+        options.addOption(InstallApp);
+        options.addOption(Reboot);
+        options.addOption(Filec2d);
+        options.addOption(Filed2c);
+        options.addOption(RpcCall);
+        options.addOption(ListProjects);
+        options.addOption(AddProjects);
+        formatter = new HelpFormatter();
     }
 
     private void helpPage() {
-        hf = new HelpFormatter();
-        hf.setShellCommand("Ecloud");
-        hf.setGroup(options);
-        hf.getFullUsageSettings().add(DisplaySetting.DISPLAY_ALIASES);
+        formatter.printHelp("Ecloud", options);
     }
 
     private ConsoleReader cons;
-    private DefaultOptionBuilder oBuilder;
-    private ArgumentBuilder aBuilder;
-    private GroupBuilder gBuilder;
-    private Group options;
-    private Parser parser;
+    private Options options;
     private CommandLine cl;
+    private BasicParser parser;
+    private HelpFormatter formatter;
     private DeviceControl dc;
+
     private Option help;
     private Option quit;
     private Option Login;
