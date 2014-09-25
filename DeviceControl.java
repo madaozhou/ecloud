@@ -38,84 +38,168 @@ public class DeviceControl{
 
     public String GetVer(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/getver";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String GetCfg(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/getcfg";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String SetCfg(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/setcfg";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String Ping(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/ping";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String UpdateFirmware(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/updatefirmware";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String System(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/system";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String GetAppList(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/getapplist";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String StartApp(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/startapp";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String StopApp(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/stopapp";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String InstallApp(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/installapp";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String Reboot(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/reboot";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String Filec2d(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/filec2d";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String Filed2c(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/filed2c";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
 
     public String RpcCall(String json_str) throws Exception{
         String URL = BaseUrl + "v1/dev/ctl/rpccall";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
         ApiResponseParser(URL, json_str);
         return respones;
     }
