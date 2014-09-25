@@ -330,7 +330,8 @@ public class TestJline {
                 .withDescription("add projects")
                 .withArgument(
                         aBuilder
-                            .withName("name vendor info tag")
+                            .withDescription("name vendor info tag")
+                            .withName("arg")
                             .withMinimum(4)
                             .withMaximum(4)
                             .create())
