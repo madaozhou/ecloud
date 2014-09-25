@@ -25,19 +25,24 @@ public class DeviceControl{
     public static final String BaseUrl =
         "http://115.29.204.44:8080/ecloud/";
 
-    public void Login(String json_str) throws Exception{
+    public int Login(String json_str) throws Exception{
         String URL = BaseUrl + "v1/admin/user/userlogin1";
         ApiResponseParser(URL, json_str);
+        return retcode;
     }
 
+    /* **********************************************************
+     * Device management api
+     * *********************************************************/
+
     public String GetAPIStatus(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/getapistatus";
+        String URL = BaseUrl + deviceManagementUrl + "/getapistatus";
         ApiResponseParser(URL, json_str);
         return status;
     }
 
     public String GetVer(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/getver";
+        String URL = BaseUrl + deviceManagementUrl + "/getver";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -45,11 +50,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String GetCfg(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/getcfg";
+        String URL = BaseUrl + deviceManagementUrl + "/getcfg";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -57,11 +62,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String SetCfg(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/setcfg";
+        String URL = BaseUrl + deviceManagementUrl + "/setcfg";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -69,11 +74,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String Ping(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/ping";
+        String URL = BaseUrl + deviceManagementUrl + "/ping";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -81,11 +86,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String UpdateFirmware(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/updatefirmware";
+        String URL = BaseUrl + deviceManagementUrl + "/updatefirmware";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -93,11 +98,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String System(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/system";
+        String URL = BaseUrl + deviceManagementUrl + "/system";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -105,11 +110,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String GetAppList(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/getapplist";
+        String URL = BaseUrl + deviceManagementUrl + "/getapplist";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -117,11 +122,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String StartApp(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/startapp";
+        String URL = BaseUrl + deviceManagementUrl + "/startapp";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -129,11 +134,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String StopApp(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/stopapp";
+        String URL = BaseUrl + deviceManagementUrl + "/stopapp";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -141,11 +146,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String InstallApp(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/installapp";
+        String URL = BaseUrl + deviceManagementUrl + "/installapp";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -153,11 +158,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String Reboot(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/reboot";
+        String URL = BaseUrl + deviceManagementUrl + "/reboot";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -165,11 +170,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String Filec2d(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/filec2d";
+        String URL = BaseUrl + deviceManagementUrl + "/filec2d";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -177,11 +182,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String Filed2c(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/filed2c";
+        String URL = BaseUrl + deviceManagementUrl + "/filed2c";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -189,11 +194,11 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
     public String RpcCall(String json_str) throws Exception{
-        String URL = BaseUrl + "v1/dev/ctl/rpccall";
+        String URL = BaseUrl + deviceManagementUrl + "/rpccall";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -201,9 +206,94 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return respones;
+        return response;
     }
 
+    /* **********************************************************
+     * project managment api
+     * *********************************************************/
+
+    public String AddProjects(String json_str) throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/addprojects";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    public String UpdateProjects(String json_str) throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/updateprojects";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    public String GetProjectInfo(String json_str) throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/getprojectinfo";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    public String DeleteProject(String json_str) throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/deleteproject";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    public String ListProjects() throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/listprojects";
+        JsonObject jobj = Json.createObjectBuilder()
+            .add("auth_token", auth_token)
+            .build();
+        String json_str = jobj.toString();
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    public String GetProjectStats(String json_str) throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/getprojectstats";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    public String ListProjectUsers(String json_str) throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/listprojectusers";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
    // public static void main(String[] args) throws Exception{
    //     DeviceControl devicecontrol = new DeviceControl();
    //     devicecontrol.setUserName("admin");
@@ -269,8 +359,8 @@ public class DeviceControl{
                         System.out.println(status);
                     }
                     else {
-                        respones = jobj.toString();
-                        System.out.println(respones);
+                        response = jobj.toString();
+                        System.out.println(response);
                     }
                     EntityUtils.consume(entity);
                     //get all values in json object
@@ -365,7 +455,7 @@ public class DeviceControl{
     private String api_qid;
     private int time_out;
     private String auth_token;
-    private String respones;
+    private String response;
     private String status;
     private String username;
     private String password;
@@ -373,6 +463,8 @@ public class DeviceControl{
     private String challenge;
     private String algorithm;
     private String salt;
+    private static final String deviceManagementUrl = "v1/dev/ctl";
+    private static final String projectManagementUrl = "v1/admin/project";
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6',
         '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 }

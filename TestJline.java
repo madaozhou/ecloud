@@ -45,8 +45,8 @@ public class TestJline {
             if (cl.hasOption(Login)) {
                 cons.setPrompt("username:");
                 String username = cons.readLine();
-                cons.setPrompt("password:");
-                String password = cons.readLine();
+                cons.setPrompt(null);
+                String password = cons.readLine("password:", '*');
                 cons.setPrompt("Ecloud ");
                 dc.setUserName(username);
                 dc.setPassWord(password);
@@ -55,7 +55,15 @@ public class TestJline {
                     .add("username", username)
                     .build();
                 json_str = jobj.toString();
-                dc.Login(json_str);
+                int retcode = dc.Login(json_str);
+                cons.setPrompt(null);
+                if (retcode == 0) {
+                    System.out.println("Login success, you should call ListProjects.");
+                }
+                else {
+                    System.out.println("Login fail!");
+                }
+                cons.setPrompt("Ecloud");
                 return 1;
             }
             if (cl.hasOption(GetVer)) {
@@ -128,6 +136,10 @@ public class TestJline {
                 dc.GetVer(jsonStr);
                 return 1;
             }
+            if (cl.hasOption(ListProjects)) {
+                dc.ListProjects();
+                return 1;
+            }
         } catch (OptionException e) {
             e.printStackTrace();
         }
@@ -156,12 +168,6 @@ public class TestJline {
             oBuilder
                 .withShortName("Login")
                 .withDescription("Login into energy cloud system")
-               // .withArgument(
-               //         aBuilder
-               //             .withName("jsonStr")
-               //             .withMinimum(1)
-               //             .withMaximum(1)
-               //             .create())
                 .create();
         GetVer =
             oBuilder
@@ -317,6 +323,23 @@ public class TestJline {
                             .withMaximum(1)
                             .create())
                 .create();
+
+        AddProjects =
+            oBuilder
+                .withShortName("AddProjects")
+                .withDescription("add projects")
+                .withArgument(
+                        aBuilder
+                            .withName("name vendor info tag")
+                            .withMinimum(4)
+                            .withMaximum(4)
+                            .create())
+                .create();
+        ListProjects =
+            oBuilder
+                .withShortName("ListProjects")
+                .withDescription("list existed projects")
+                .create();
         options =
             gBuilder
                 .withName("options")
@@ -337,6 +360,8 @@ public class TestJline {
                 .withOption(Filec2d)
                 .withOption(Filed2c)
                 .withOption(RpcCall)
+                .withOption(AddProjects)
+                .withOption(ListProjects)
                 .create();
         parser = new Parser();
         parser.setGroup(options);
@@ -361,6 +386,15 @@ public class TestJline {
     private Option help;
     private Option quit;
     private Option Login;
+
+    private Option ListProjects;
+    private Option AddProjects;
+    private Option UpdateProjects;
+    private Option GetProjectInfo;
+    private Option DeleteProject;
+    private Option GetProjectStats;
+    private Option ListProjectUsers;
+
     private Option GetVer;
     private Option GetCfg;
     private Option SetCfg;
