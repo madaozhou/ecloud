@@ -2,6 +2,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Iterator;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ByteArrayInputStream;
 
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
@@ -17,13 +22,51 @@ public class TestJline {
     public static void main(String[] args) throws Exception{
         TestJline cli = new TestJline();
         cli.cons = new ConsoleReader();
+        cli.completors = new LinkedList<Completer>();
+        cli.completors.add(new StringsCompleter(
+                    "-h",
+                    "-help",
+                    "-q",
+                    "-quit",
+                    "-Login",
+                    "-ListProjects",
+                    "-AddProject",
+                    "-UpdateProject",
+                    "-GetProjectInfo",
+                    "-DeleteProject",
+                    "-GetProjectStats",
+                    "-ListProjectUser",
+                    "-ListDevInProject",
+                    "-ListDevByGroup",
+                    "-GetVer",
+                    "-GetCfg",
+                    "-SetCfg",
+                    "-Ping",
+                    "-UpdateFirmware",
+                    "-System",
+                    "-GetAppList",
+                    "-StartApp",
+                    "-StopApp",
+                    "-InstallApp",
+                    "-Reboot",
+                    "-Filec2d",
+                    "-Filed2c",
+                    "-RpcCall",
+                    "-AddDev",
+                    "-UpdateDev",
+                    "-GetDevInfo",
+                    "-DeleteDev"
+                    ));
         if (cli.cons != null) {
-            System.out.printf("Hi, welcome to Ecloud!\n");
+            for (Completer c : cli.completors) {
+                cli.cons.addCompleter(c);
+            }
+            System.out.println("Hi, welcome to Ecloud!");
+            System.out.println("enter -helo for help.");
             PrintWriter writer = new PrintWriter(cli.cons.getOutput());
             cli.cons.setPrompt("Ecloud ");
             while (true) {
                 String str1 = cli.cons.readLine();
-                System.out.println(str1);
                 String[] inputArgs = str1.split(" ");
                 if (cli.engine(inputArgs) == 0)
                     break;
@@ -34,7 +77,6 @@ public class TestJline {
     public int engine(String[] args) throws Exception{
         parser = new BasicParser();
         try {
-            System.out.println(args[0]);
             cl = parser.parse(options, args);
             if (cl.hasOption("help")) {
                 helpPage();
@@ -68,84 +110,414 @@ public class TestJline {
                 cons.setPrompt("Ecloud ");
                 return 1;
             }
-           // if (cl.hasOption(GetVer)) {
-           //     String jsonStr = (String)cl.getValue(GetVer);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(GetCfg)) {
-           //     String jsonStr = (String)cl.getValue(GetCfg);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(SetCfg)) {
-           //     String jsonStr = (String)cl.getValue(SetCfg);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(Ping)) {
-           //     String jsonStr = (String)cl.getValue(Ping);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(UpdateFirmware)) {
-           //     String jsonStr = (String)cl.getValue(UpdateFirmware);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(system)) {
-           //     String jsonStr = (String)cl.getValue(system);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(GetAppList)) {
-           //     String jsonStr = (String)cl.getValue(GetAppList);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(StartApp)) {
-           //     String jsonStr = (String)cl.getValue(StartApp);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(StopApp)) {
-           //     String jsonStr = (String)cl.getValue(StopApp);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(InstallApp)) {
-           //     String jsonStr = (String)cl.getValue(InstallApp);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(Reboot)) {
-           //     String jsonStr = (String)cl.getValue(Reboot);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(Filec2d)) {
-           //     String jsonStr = (String)cl.getValue(Filec2d);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(Filed2c)) {
-           //     String jsonStr = (String)cl.getValue(Filed2c);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(RpcCall)) {
-           //     String jsonStr = (String)cl.getValue(RpcCall);
-           //     dc.GetVer(jsonStr);
-           //     return 1;
-           // }
-           // if (cl.hasOption(ListProjects)) {
-           //     dc.ListProjects();
-           //     return 1;
-           // }
+
+            /* **********************************************************
+             * Device management
+             * *********************************************************/
+
+            if (cl.hasOption("GetVer")) {
+                String device = cl.getOptionValue("GetVer");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", device)
+                    .build();
+                String retStr = dc.GetVer(jobj.toString());
+                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                JsonReader jsonReader = Json.createReader(in);
+                jobj = jsonReader.readObject();
+                int retcode = jobj.getInt("retcode", -1);
+                if (retcode == 0) {
+                    String version = jobj.getString("ver");
+                    System.out.println("---------------------------------------");
+                    System.out.println("version : " + version);
+                    System.out.println("---------------------------------------");
+                    System.out.println();
+                }
+                else {
+                    System.out.printf("retcode = %d\n", retcode);
+                }
+                return 1;
+            }
+            if (cl.hasOption("GetCfg")) {
+                String device = cl.getOptionValue("GetCfg");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", device)
+                    .build();
+                String retStr = dc.GetCfg(jobj.toString());
+                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                JsonReader jsonReader = Json.createReader(in);
+                jobj = jsonReader.readObject();
+                int retcode = jobj.getInt("retcode", -1);
+                if (retcode == 0) {
+                    String version = jobj.getString("cfg");
+                    System.out.println("---------------------------------------");
+                    System.out.println("version : " + version);
+                    System.out.println("---------------------------------------");
+                    System.out.println();
+                }
+                else {
+                    System.out.printf("retcode = %d\n", retcode);
+                }
+                return 1;
+            }
+            if (cl.hasOption("SetCfg")) {
+                String argsArray[] = cl.getOptionValues("SetCfg");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", argsArray[0])
+                    .add("config", argsArray[1])
+                    .build();
+                dc.SetCfg(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("Ping")) {
+                String device = cl.getOptionValue("Ping");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", device)
+                    .build();
+                String retStr = dc.Ping(jobj.toString());
+                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                JsonReader jsonReader = Json.createReader(in);
+                jobj = jsonReader.readObject();
+                int retcode = jobj.getInt("retcode", -1);
+                if (retcode == 0) {
+                    String data = jobj.getString("data");
+                    System.out.println("---------------------------------------");
+                    System.out.println("return data : " + data);
+                    System.out.println("---------------------------------------");
+                    System.out.println();
+                }
+                else {
+                    System.out.printf("retcode = %d\n", retcode);
+                }
+                return 1;
+            }
+            if (cl.hasOption("UpdateFirmware")) {
+                String argsArray[] = cl.getOptionValues("UpdateFirmware");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", argsArray[0])
+                    .add("srcaddr", argsArray[1])
+                    .add("version", argsArray[2])
+                    .build();
+                dc.UpdateFirmware(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("System")) {
+                String argsArray[] = cl.getOptionValues("System");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", argsArray[0])
+                    .add("cmd", argsArray[1])
+                    .build();
+                dc.System(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("GetAppList")) {
+                String device = cl.getOptionValue("GetAppList");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", device)
+                    .build();
+                String retStr = dc.GetAppList(jobj.toString());
+                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                JsonReader jsonReader = Json.createReader(in);
+                jobj = jsonReader.readObject();
+                int retcode = jobj.getInt("retcode", -1);
+                if (retcode == 0) {
+                    JsonArray apps = jobj.getJsonArray("apps");
+                    Iterator iter = apps.iterator();
+                    System.out.println("---------------------------------------");
+                    while (iter.hasNext()) {
+                        System.out.println(iter.next().toString());
+                    }
+                    System.out.println("---------------------------------------");
+                    System.out.println();
+                }
+                else {
+                    System.out.printf("retcode = %d\n", retcode);
+                }
+                return 1;
+            }
+            if (cl.hasOption("StartApp")) {
+                String argsArray[] = cl.getOptionValues("StartApp");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", argsArray[0])
+                    .add("name", argsArray[1])
+                    .add("params", argsArray[2])
+                    .build();
+                dc.StartApp(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("StopApp")) {
+                String argsArray[] = cl.getOptionValues("StopApp");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", argsArray[0])
+                    .add("name", argsArray[1])
+                    .build();
+                dc.StopApp(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("InstallApp")) {
+                String argsArray[] = cl.getOptionValues("InstallApp");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", argsArray[0])
+                    .add("apppath", argsArray[1])
+                    .build();
+                dc.InstallApp(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("Reboot")) {
+                String device = cl.getOptionValue("Reboot");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", device)
+                    .build();
+                dc.Reboot(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("Filec2d")) {
+                String argsArray[] = cl.getOptionValues("Filec2d");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", argsArray[0])
+                    .add("src", argsArray[1])
+                    .add("dest", argsArray[2])
+                    .build();
+                dc.Filec2d(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("Filed2c")) {
+                String argsArray[] = cl.getOptionValues("Filed2c");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", argsArray[0])
+                    .add("src", argsArray[1])
+                    .add("dest", argsArray[2])
+                    .build();
+                dc.Filed2c(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("RpcCall")) {
+                String argsArray[] = cl.getOptionValues("RpcCall");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("device", argsArray[0])
+                    .add("cmd", argsArray[1])
+                    .build();
+                dc.RpcCall(jobj.toString());
+                return 1;
+            }
+
+            /* **********************************************************
+             * project managment
+             * *********************************************************/
+
+            if (cl.hasOption("ListProjects")) {
+                String retStr = dc.ListProjects();
+                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                JsonReader jsonReader = Json.createReader(in);
+                JsonObject jobj = jsonReader.readObject();
+                int retcode = jobj.getInt("retcode", -1);
+                if (retcode == 0) {
+                    JsonArray projects = jobj.getJsonArray("projects");
+                    Iterator iter = projects.iterator();
+                    System.out.println("---------------------------------------");
+                    while (iter.hasNext()) {
+                        System.out.println(iter.next().toString());
+                    }
+                    System.out.println("---------------------------------------");
+                    System.out.println("enter -ListDevInProject to get device id");
+                    System.out.println();
+                }
+                else {
+                    System.out.printf("retcode = %d\n", retcode);
+                }
+                return 1;
+            }
+            if (cl.hasOption("AddProject")) {
+                String argsArray[] = cl.getOptionValues("AddProject");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("name", argsArray[0])
+                    .add("vendor", argsArray[1])
+                    .add("info", argsArray[2])
+                    .add("tag", argsArray[3])
+                    .build();
+                dc.AddProject(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("GetProjectInfo")) {
+                String projectId = cl.getOptionValue("GetProjectInfo");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("project_id", projectId)
+                    .build();
+                dc.GetProjectInfo(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("UpdateProject")) {
+                String argsArray[] = cl.getOptionValues("UpdateProject");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("project_id", argsArray[0])
+                    .add("name", argsArray[1])
+                    .add("info", argsArray[2])
+                    .add("tag", argsArray[3])
+                    .build();
+                dc.UpdateProject(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("DeleteProject")) {
+                String projectId = cl.getOptionValue("DeleteProject");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("project_id", projectId)
+                    .build();
+                dc.DeleteProject(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("ListProjectUser")) {
+                String projectId = cl.getOptionValue("ListProjectUser");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("project_id", projectId)
+                    .build();
+                String retStr = dc.ListProjectUser(jobj.toString());
+                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                JsonReader jsonReader = Json.createReader(in);
+                jobj = jsonReader.readObject();
+                int retcode = jobj.getInt("retcode", -1);
+                if (retcode == 0) {
+                    JsonArray users = jobj.getJsonArray("users");
+                    Iterator iter = users.iterator();
+                    System.out.println("---------------------------------------");
+                    while (iter.hasNext()) {
+                        System.out.println(iter.next().toString());
+                    }
+                    System.out.println("---------------------------------------");
+                    System.out.println();
+                }
+                else {
+                    System.out.printf("retcode = %d\n", retcode);
+                }
+                return 1;
+            }
+            if (cl.hasOption("ListDevInProject")) {
+                String argsArray[] = cl.getOptionValues("ListDevInProject");
+                String filter = "";
+                if (argsArray.length == 2) {
+                    filter = argsArray[1];
+                }
+                System.out.println(argsArray[0]);
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("project_id", argsArray[0])
+                    .add("filter", filter)
+                    .build();
+                String retStr = dc.ListDevInProject(jobj.toString());
+                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                JsonReader jsonReader = Json.createReader(in);
+                jobj = jsonReader.readObject();
+                int retcode = jobj.getInt("retcode", -1);
+                if (retcode == 0) {
+                    JsonArray gateways = jobj.getJsonArray("gateways");
+                    Iterator iter = gateways.iterator();
+                    System.out.println("---------------------------------------");
+                    while (iter.hasNext()) {
+                        System.out.println(iter.next().toString());
+                    }
+                    System.out.println("---------------------------------------");
+                    System.out.println();
+                }
+                else {
+                    System.out.printf("retcode = %d\n", retcode);
+                }
+                return 1;
+            }
+            if (cl.hasOption("ListDevByGroup")) {
+                String argsArray[] = cl.getOptionValues("ListDevByGroup");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("project_id", argsArray[0])
+                    .add("group_id", argsArray[1])
+                    .build();
+                dc.ListDevByGroup(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("GetProjectStats")) {
+                String projectId = cl.getOptionValue("GetProjectStats");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("project_id", projectId)
+                    .build();
+                String retStr = dc.GetProjectStats(jobj.toString());
+                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                JsonReader jsonReader = Json.createReader(in);
+                jobj = jsonReader.readObject();
+                int retcode = jobj.getInt("retcode", -1);
+                if (retcode == 0) {
+                    String stats = jobj.getString("stats");
+                    System.out.println("---------------------------------------");
+                    System.out.println("stats : " + stats);
+                    System.out.println("---------------------------------------");
+                    System.out.println();
+                }
+                else {
+                    System.out.printf("retcode = %d\n", retcode);
+                }
+                return 1;
+            }
+
+            if (cl.hasOption("AddDev")) {
+                String argsArray[] = cl.getOptionValues("AddDev");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("project_id", argsArray[0])
+                    .add("device_hw_id", argsArray[1])
+                    .add("tag", argsArray[2])
+                    .add("name", argsArray[3])
+                    .add("vendor", argsArray[4])
+                    .add("systeminfo", argsArray[5])
+                    .add("location", argsArray[6])
+                    .add("groupids", argsArray[7])
+                    .build();
+                dc.AddDev(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("UpdateDev")) {
+                String argsArray[] = cl.getOptionValues("UpdateDev");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("project_id", argsArray[0])
+                    .add("gateway_id", argsArray[1])
+                    .add("device_hw_id", argsArray[2])
+                    .add("tag", argsArray[3])
+                    .add("name", argsArray[4])
+                    .add("vendor", argsArray[5])
+                    .add("systeminfo", argsArray[7])
+                    .add("location", argsArray[8])
+                    .add("groupids", argsArray[9])
+                    .build();
+                dc.UpdateDev(jobj.toString());
+                return 1;
+            }
+            if (cl.hasOption("GetDevInfo")) {
+                String argsArray[] = cl.getOptionValues("GetDevInfo");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("project_id", argsArray[0])
+                    .add("gateway_id", argsArray[1])
+                    .build();
+                String retStr = dc.GetDevInfo(jobj.toString());
+                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                JsonReader jsonReader = Json.createReader(in);
+                jobj = jsonReader.readObject();
+                int retcode = jobj.getInt("retcode", -1);
+                if (retcode == 0) {
+                    //jobj.remove("retcode");
+                    System.out.println("---------------------------------------");
+                    System.out.println(jobj.toString());
+                    System.out.println("---------------------------------------");
+                    System.out.println();
+                }
+                else {
+                    System.out.printf("retcode = %d\n", retcode);
+                }
+                return 1;
+            }
+            if (cl.hasOption("DeleteDev")) {
+                String argsArray[] = cl.getOptionValues("DeleteDev");
+                JsonObject jobj = Json.createObjectBuilder()
+                    .add("project_id", argsArray[0])
+                    .add("gateway_id", argsArray[1])
+                    .build();
+                dc.DeleteDev(jobj.toString());
+                return 1;
+            }
         } catch (ParseException e) {
             System.err.println("Parsing failed. Reason: " + e.getMessage());
         }
-        System.out.println("Unknown cmd");
         return 1;
     }
 
@@ -164,120 +536,171 @@ public class TestJline {
                 .create("q");
         Login =
             OptionBuilder
-                .withLongOpt("Login")
-                .withDescription("Login into energy cloud system")
-                .create();
+                .withDescription("Login into energy cloud System")
+                .create("Login");
         GetVer =
             OptionBuilder
-                .withLongOpt("GetVer")
                 .withDescription("get version of gateway")
                 .withArgName("device")
                 .hasArgs(1)
-                .create();
+                .create("GetVer");
         GetCfg =
             OptionBuilder
-                .withLongOpt("GetCfg")
                 .withDescription("get configuration of gateway")
                 .withArgName("device")
                 .hasArgs(1)
-                .create();
+                .create("GetCfg");
         SetCfg =
             OptionBuilder
-                .withLongOpt("SetCfg")
                 .withDescription("configure gateway")
                 .withArgName("device> <config")
                 .hasArgs(2)
-                .create();
+                .create("SetCfg");
         Ping =
             OptionBuilder
-                .withLongOpt("Ping")
                 .withDescription("detect device's status")
                 .withArgName("device")
                 .hasArgs(1)
-                .create();
+                .create("Ping");
         UpdateFirmware =
             OptionBuilder
-                .withLongOpt("UpdateFirmware")
                 .withDescription("update firmware of gateway")
                 .withArgName("device> <srcaddr> <version")
                 .hasArgs(3)
-                .create();
+                .create("UpdateFirmware");
         system =
             OptionBuilder
-                .withLongOpt("system")
-                .withDescription("run system cmd")
+                .withDescription("run System cmd")
                 .withArgName("device> <cmd")
                 .hasArgs(2)
-                .create();
+                .create("System");
         GetAppList =
             OptionBuilder
-                .withLongOpt("GetAppList")
                 .withDescription("get application list")
                 .withArgName("device")
                 .hasArgs(1)
-                .create();
+                .create("GetAppList");
         StartApp =
             OptionBuilder
-                .withLongOpt("StartApp")
                 .withDescription("start application")
                 .withArgName("device> <name> <params")
                 .hasArgs(3)
-                .create();
+                .create("StartApp");
         StopApp =
             OptionBuilder
-                .withLongOpt("StopApp")
                 .withDescription("stop application")
                 .withArgName("device> <name")
                 .hasArgs(2)
-                .create();
+                .create("StopApp");
         InstallApp =
             OptionBuilder
-                .withLongOpt("InstallApp")
                 .withDescription("install application")
                 .withArgName("device> <apppath")
                 .hasArgs(2)
-                .create();
+                .create("InstallApp");
         Reboot =
             OptionBuilder
-                .withLongOpt("Reboot")
                 .withDescription("reboot device")
                 .withArgName("device")
                 .hasArgs(1)
-                .create();
+                .create("Reboot");
         Filec2d =
             OptionBuilder
-                .withLongOpt("Filec2d")
                 .withDescription("tansfer file from cloud to device")
                 .withArgName("device> <src> <dest")
                 .hasArgs(3)
-                .create();
+                .create("Filec2d");
         Filed2c =
             OptionBuilder
-                .withLongOpt("Filed2c")
                 .withDescription("tansfer file from device to cloud")
                 .withArgName("device> <src> <dest")
                 .hasArgs(3)
-                .create();
+                .create("Filed2c");
         RpcCall =
             OptionBuilder
-                .withLongOpt("RpcCall")
                 .withDescription("call device's RPC")
                 .withArgName("device> <cmd")
                 .hasArgs(2)
-                .create();
+                .create("RpcCall");
 
         ListProjects =
             OptionBuilder
-                .withLongOpt("ListProjects")
                 .withDescription("list existed projects")
-                .create();
-        AddProjects =
+                .create("ListProjects");
+        AddProject =
             OptionBuilder
-                .withLongOpt("AddProjects")
                 .withDescription("add projects")
                 .withArgName("name> <vendor> <info> <tag")
                 .hasArgs(4)
-                .create();
+                .create("AddProject");
+        GetProjectInfo =
+            OptionBuilder
+                .withDescription("get project's information")
+                .withArgName("project_id")
+                .hasArgs(1)
+                .create("GetProjectInfo");
+        UpdateProject =
+            OptionBuilder
+                .withDescription("update project")
+                .withArgName("project_id> <name> <info> <tag")
+                .hasArgs(4)
+                .create("UpdateProject");
+        DeleteProject =
+            OptionBuilder
+                .withDescription("Delete the given project")
+                .withArgName("project_id")
+                .hasArgs(1)
+                .create("DeleteProject");
+        ListProjectUser =
+            OptionBuilder
+                .withDescription("list the users of given project")
+                .withArgName("project_id")
+                .hasArgs(1)
+                .create("ListProjectUser");
+        ListDevInProject =
+            OptionBuilder
+                .withDescription("list the devices of given project")
+                .withArgName("project_id> <filter")
+                .hasArgs(2)
+                .create("ListDevInProject");
+        ListDevByGroup =
+            OptionBuilder
+                .withDescription("list the devices of given group")
+                .withArgName("project_id> <group_id")
+                .hasArgs(2)
+                .create("ListDevByGroup");
+        GetProjectStats =
+            OptionBuilder
+                .withDescription("get the stats of given project")
+                .withArgName("project_id")
+                .hasArgs(1)
+                .create("GetProjectStats");
+
+        AddDev =
+            OptionBuilder
+                .withDescription("add device")
+                .withArgName("project_id> <device_hw_id> <tag> <name> <vendor> <systeminfo> <location> <groupids")
+                .hasArgs(8)
+                .create("AddDev");
+        UpdateDev =
+            OptionBuilder
+                .withDescription("update device")
+                .withArgName("project_id> <gateway_id> <device_hw_id> <tag> <name> <vendor> <systeminfo> <location> <groupids")
+                .hasArgs(9)
+                .create("AddDev");
+        GetDevInfo =
+            OptionBuilder
+                .withDescription("get device information")
+                .withArgName("project_id> <gateway_id")
+                .hasArgs(2)
+                .create("GetDevInfo");
+        DeleteDev =
+            OptionBuilder
+                .withDescription("delete device")
+                .withArgName("project_id> <gateway_id")
+                .hasArgs(2)
+                .create("DeleteDev");
+
         options.addOption(help);
         options.addOption(quit);
         options.addOption(Login);
@@ -296,15 +719,28 @@ public class TestJline {
         options.addOption(Filed2c);
         options.addOption(RpcCall);
         options.addOption(ListProjects);
-        options.addOption(AddProjects);
+        options.addOption(AddProject);
+        options.addOption(GetProjectInfo);
+        options.addOption(UpdateProject);
+        options.addOption(DeleteProject);
+        options.addOption(ListProjectUser);
+        options.addOption(ListDevInProject);
+        options.addOption(ListDevByGroup);
+        options.addOption(GetProjectStats);
+        options.addOption(AddDev);
+        options.addOption(UpdateDev);
+        options.addOption(GetDevInfo);
+        options.addOption(DeleteDev);
         formatter = new HelpFormatter();
     }
 
     private void helpPage() {
+        formatter.setWidth(200);
         formatter.printHelp("Ecloud", options);
     }
 
     private ConsoleReader cons;
+    List<Completer> completors;
     private Options options;
     private CommandLine cl;
     private BasicParser parser;
@@ -316,12 +752,14 @@ public class TestJline {
     private Option Login;
 
     private Option ListProjects;
-    private Option AddProjects;
-    private Option UpdateProjects;
+    private Option AddProject;
     private Option GetProjectInfo;
+    private Option UpdateProject;
     private Option DeleteProject;
+    private Option ListProjectUser;
+    private Option ListDevInProject;
+    private Option ListDevByGroup;
     private Option GetProjectStats;
-    private Option ListProjectUsers;
 
     private Option GetVer;
     private Option GetCfg;
@@ -337,5 +775,9 @@ public class TestJline {
     private Option Filec2d;
     private Option Filed2c;
     private Option RpcCall;
-    private HelpFormatter hf;
+
+    private Option AddDev;
+    private Option UpdateDev;
+    private Option GetDevInfo;
+    private Option DeleteDev;
 }

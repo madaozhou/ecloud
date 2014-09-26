@@ -50,7 +50,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String GetCfg(String json_str) throws Exception{
@@ -62,7 +62,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String SetCfg(String json_str) throws Exception{
@@ -74,7 +74,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String Ping(String json_str) throws Exception{
@@ -86,7 +86,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String UpdateFirmware(String json_str) throws Exception{
@@ -98,7 +98,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String System(String json_str) throws Exception{
@@ -110,7 +110,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String GetAppList(String json_str) throws Exception{
@@ -122,7 +122,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String StartApp(String json_str) throws Exception{
@@ -134,7 +134,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String StopApp(String json_str) throws Exception{
@@ -146,7 +146,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String InstallApp(String json_str) throws Exception{
@@ -158,7 +158,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String Reboot(String json_str) throws Exception{
@@ -170,7 +170,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String Filec2d(String json_str) throws Exception{
@@ -182,7 +182,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String Filed2c(String json_str) throws Exception{
@@ -194,7 +194,7 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     public String RpcCall(String json_str) throws Exception{
@@ -206,15 +206,15 @@ public class DeviceControl{
             json_str = subStr + tmp;
         }
         ApiResponseParser(URL, json_str);
-        return response;
+        return status;
     }
 
     /* **********************************************************
      * project managment api
      * *********************************************************/
 
-    public String AddProjects(String json_str) throws Exception{
-        String URL = BaseUrl + projectManagementUrl + "/addprojects";
+    public String AddProject(String json_str) throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/addproject";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -225,8 +225,8 @@ public class DeviceControl{
         return response;
     }
 
-    public String UpdateProjects(String json_str) throws Exception{
-        String URL = BaseUrl + projectManagementUrl + "/updateprojects";
+    public String UpdateProject(String json_str) throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/updateproject";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -283,8 +283,84 @@ public class DeviceControl{
         return response;
     }
 
-    public String ListProjectUsers(String json_str) throws Exception{
-        String URL = BaseUrl + projectManagementUrl + "/listprojectusers";
+    public String ListDevInProject(String json_str) throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/listdevinproject";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    public String ListDevByGroup(String json_str) throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/listdevbygroup";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    public String ListProjectUser(String json_str) throws Exception{
+        String URL = BaseUrl + projectManagementUrl + "/listprojectuser";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    /* **********************************************************
+     * gateway managment api
+     * *********************************************************/
+
+    public String AddDev(String json_str) throws Exception{
+        String URL = BaseUrl + gatewayManagementUrl + "/adddev";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    public String UpdateDev(String json_str) throws Exception{
+        String URL = BaseUrl + gatewayManagementUrl + "/updatedev";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    public String GetDevInfo(String json_str) throws Exception{
+        String URL = BaseUrl + gatewayManagementUrl + "/getdevinfo";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        ApiResponseParser(URL, json_str);
+        return response;
+    }
+
+    public String DeleteDev(String json_str) throws Exception{
+        String URL = BaseUrl + gatewayManagementUrl + "/deletedev";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -335,10 +411,10 @@ public class DeviceControl{
     private void ApiResponseParser(String URL, String json_str) throws Exception{
         CloseableHttpClient httpClient = HttpClients.createDefault();
         try {
-            System.out.println("Post URL:");
-            System.out.println(URL);
-            System.out.println("Post request entity:");
-            System.out.println(json_str);
+            //System.out.println("Post URL:");
+            //System.out.println(URL);
+            //System.out.println("Post request entity:");
+            //System.out.println(json_str);
             HttpPost httpPost = new HttpPost(URL);
             ByteArrayInputStream in = new ByteArrayInputStream(json_str.getBytes());
             JsonReader jsonReader = Json.createReader(in);
@@ -347,20 +423,20 @@ public class DeviceControl{
                         jobj.toString().getBytes("UTF8")));
             CloseableHttpResponse apiResponse = httpClient.execute(httpPost);
             try {
-                System.out.println(apiResponse.getStatusLine());
+                //System.out.println(apiResponse.getStatusLine());
                 if (apiResponse.getStatusLine().getStatusCode() == 200) {
                     HttpEntity entity = apiResponse.getEntity();
                     InputStream entityIn = entity.getContent();
                     jsonReader = Json.createReader(entityIn);
                     jobj = jsonReader.readObject();
-                    System.out.println("Recieved JSON:");
+                    //System.out.println("Recieved JSON:");
                     if (URL.contains("getapistatus")) {
                         status = jobj.toString();
-                        System.out.println(status);
+                        //System.out.println(status);
                     }
                     else {
                         response = jobj.toString();
-                        System.out.println(response);
+                        //System.out.println(response);
                     }
                     EntityUtils.consume(entity);
                     //get all values in json object
@@ -373,21 +449,21 @@ public class DeviceControl{
                     algorithm = jobj.getString("algorithm", "-1");
                     salt = jobj.getString("salt", "-1");
                     if (retcode > 10000) {
-                        System.out.printf("Error code:  %d\n", retcode);
-                        System.out.println();
+                        //System.out.printf("Error code:  %d\n", retcode);
+                        //System.out.println();
                     }
                     else if (retcode == 0 && jobj.containsKey("algorithm")) {
-                        System.out.println("Success.");
+                        //System.out.println("Success.");
                         login_response();
-                        System.out.println();
+                        //System.out.println();
                     }
                     else if (retcode == 0 && jobj.containsKey("response")) {
-                        System.out.println("Success.");
-                        System.out.println();
+                        //System.out.println("Success.");
+                        //System.out.println();
                     }
                     else if (retcode == 0) {
-                        System.out.println("Success.");
-                        System.out.println();
+                        //System.out.println("Success.");
+                        //System.out.println();
                     }
                     else if (retcode == 1) {
                         try {
@@ -416,17 +492,17 @@ public class DeviceControl{
 
     private void login_response() throws Exception{
         String str1 = password + salt;
-        System.out.println(str1);
+        //System.out.println(str1);
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
             messageDigest.update(str1.getBytes());
             String hash1 = getFormattedText(messageDigest.digest());
-            System.out.println(hash1);
+            //System.out.println(hash1);
             String str2 = hash1 + challenge;
-            System.out.println(str2);
+            //System.out.println(str2);
             messageDigest.update(str2.getBytes());
             String hash2 = getFormattedText(messageDigest.digest());
-            System.out.println(hash2);
+            //System.out.println(hash2);
             JsonObject jobj = Json.createObjectBuilder()
                 .add("username", username)
                 .add("login_id", login_id)
@@ -465,6 +541,7 @@ public class DeviceControl{
     private String salt;
     private static final String deviceManagementUrl = "v1/dev/ctl";
     private static final String projectManagementUrl = "v1/admin/project";
+    private static final String gatewayManagementUrl = "v1/admin/dev";
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6',
         '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 }
