@@ -102,7 +102,7 @@ public class TestJline {
                 int retcode = dc.Login(json_str);
                 cons.setPrompt(null);
                 if (retcode == 0) {
-                    System.out.println("Login success, you should call ListProjects.");
+                    System.out.println("Login success, enter -ListProjects to get project list.");
                 }
                 else {
                     System.out.println("Login fail!");
@@ -116,187 +116,257 @@ public class TestJline {
              * *********************************************************/
 
             if (cl.hasOption("GetVer")) {
-                String device = cl.getOptionValue("GetVer");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", device)
-                    .build();
-                String retStr = dc.GetVer(jobj.toString());
-                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-                JsonReader jsonReader = Json.createReader(in);
-                jobj = jsonReader.readObject();
-                int retcode = jobj.getInt("retcode", -1);
-                if (retcode == 0) {
-                    String version = jobj.getString("ver");
-                    System.out.println("---------------------------------------");
-                    System.out.println("version : " + version);
-                    System.out.println("---------------------------------------");
-                    System.out.println();
-                }
-                else {
-                    System.out.printf("retcode = %d\n", retcode);
+                try {
+                    String argsArray[] = cl.getOptionValues("GetVer");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .build();
+                    String retStr = dc.GetVer(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        String version = jobj.getString("ver");
+                        System.out.println("---------------------------------------");
+                        System.out.println("version : " + version);
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
                 }
                 return 1;
             }
             if (cl.hasOption("GetCfg")) {
-                String device = cl.getOptionValue("GetCfg");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", device)
-                    .build();
-                String retStr = dc.GetCfg(jobj.toString());
-                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-                JsonReader jsonReader = Json.createReader(in);
-                jobj = jsonReader.readObject();
-                int retcode = jobj.getInt("retcode", -1);
-                if (retcode == 0) {
-                    String version = jobj.getString("cfg");
-                    System.out.println("---------------------------------------");
-                    System.out.println("version : " + version);
-                    System.out.println("---------------------------------------");
-                    System.out.println();
-                }
-                else {
-                    System.out.printf("retcode = %d\n", retcode);
+                try {
+                    String argsArray[] = cl.getOptionValues("GetCfg");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .build();
+                    String retStr = dc.GetCfg(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        String version = jobj.getString("cfg");
+                        System.out.println("---------------------------------------");
+                        System.out.println("version : " + version);
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
                 }
                 return 1;
             }
             if (cl.hasOption("SetCfg")) {
-                String argsArray[] = cl.getOptionValues("SetCfg");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", argsArray[0])
-                    .add("config", argsArray[1])
-                    .build();
-                dc.SetCfg(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("SetCfg");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .add("config", argsArray[2])
+                        .build();
+                    dc.SetCfg(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("Ping")) {
-                String device = cl.getOptionValue("Ping");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", device)
-                    .build();
-                String retStr = dc.Ping(jobj.toString());
-                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-                JsonReader jsonReader = Json.createReader(in);
-                jobj = jsonReader.readObject();
-                int retcode = jobj.getInt("retcode", -1);
-                if (retcode == 0) {
-                    String data = jobj.getString("data");
-                    System.out.println("---------------------------------------");
-                    System.out.println("return data : " + data);
-                    System.out.println("---------------------------------------");
-                    System.out.println();
-                }
-                else {
-                    System.out.printf("retcode = %d\n", retcode);
+                try {
+                    String argsArray[] = cl.getOptionValues("Ping");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .build();
+                    String retStr = dc.Ping(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        String data = jobj.getString("data");
+                        System.out.println("---------------------------------------");
+                        System.out.println("return data : " + data);
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
                 }
                 return 1;
             }
             if (cl.hasOption("UpdateFirmware")) {
-                String argsArray[] = cl.getOptionValues("UpdateFirmware");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", argsArray[0])
-                    .add("srcaddr", argsArray[1])
-                    .add("version", argsArray[2])
-                    .build();
-                dc.UpdateFirmware(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("UpdateFirmware");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .add("srcaddr", argsArray[2])
+                        .add("version", argsArray[3])
+                        .build();
+                    dc.UpdateFirmware(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("System")) {
-                String argsArray[] = cl.getOptionValues("System");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", argsArray[0])
-                    .add("cmd", argsArray[1])
-                    .build();
-                dc.System(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("System");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .add("cmd", argsArray[2])
+                        .build();
+                    dc.System(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("GetAppList")) {
-                String device = cl.getOptionValue("GetAppList");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", device)
-                    .build();
-                String retStr = dc.GetAppList(jobj.toString());
-                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-                JsonReader jsonReader = Json.createReader(in);
-                jobj = jsonReader.readObject();
-                int retcode = jobj.getInt("retcode", -1);
-                if (retcode == 0) {
-                    JsonArray apps = jobj.getJsonArray("apps");
-                    Iterator iter = apps.iterator();
-                    System.out.println("---------------------------------------");
-                    while (iter.hasNext()) {
-                        System.out.println(iter.next().toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("GetAppList");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .build();
+                    String retStr = dc.GetAppList(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        JsonArray apps = jobj.getJsonArray("apps");
+                        Iterator iter = apps.iterator();
+                        System.out.println("---------------------------------------");
+                        while (iter.hasNext()) {
+                            System.out.println(iter.next().toString());
+                        }
+                        System.out.println("---------------------------------------");
+                        System.out.println();
                     }
-                    System.out.println("---------------------------------------");
-                    System.out.println();
-                }
-                else {
-                    System.out.printf("retcode = %d\n", retcode);
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
                 }
                 return 1;
             }
             if (cl.hasOption("StartApp")) {
-                String argsArray[] = cl.getOptionValues("StartApp");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", argsArray[0])
-                    .add("name", argsArray[1])
-                    .add("params", argsArray[2])
-                    .build();
-                dc.StartApp(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("StartApp");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .add("name", argsArray[2])
+                        .add("params", argsArray[3])
+                        .build();
+                    dc.StartApp(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("StopApp")) {
-                String argsArray[] = cl.getOptionValues("StopApp");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", argsArray[0])
-                    .add("name", argsArray[1])
-                    .build();
-                dc.StopApp(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("StopApp");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .add("name", argsArray[2])
+                        .build();
+                    dc.StopApp(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("InstallApp")) {
-                String argsArray[] = cl.getOptionValues("InstallApp");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", argsArray[0])
-                    .add("apppath", argsArray[1])
-                    .build();
-                dc.InstallApp(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("InstallApp");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .add("apppath", argsArray[2])
+                        .build();
+                    dc.InstallApp(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("Reboot")) {
-                String device = cl.getOptionValue("Reboot");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", device)
-                    .build();
-                dc.Reboot(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("Reboot");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .build();
+                    dc.Reboot(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("Filec2d")) {
-                String argsArray[] = cl.getOptionValues("Filec2d");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", argsArray[0])
-                    .add("src", argsArray[1])
-                    .add("dest", argsArray[2])
-                    .build();
-                dc.Filec2d(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("Filec2d");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .add("src", argsArray[2])
+                        .add("dest", argsArray[3])
+                        .build();
+                    dc.Filec2d(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("Filed2c")) {
-                String argsArray[] = cl.getOptionValues("Filed2c");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", argsArray[0])
-                    .add("src", argsArray[1])
-                    .add("dest", argsArray[2])
-                    .build();
-                dc.Filed2c(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("Filed2c");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .add("src", argsArray[2])
+                        .add("dest", argsArray[3])
+                        .build();
+                    dc.Filed2c(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("RpcCall")) {
-                String argsArray[] = cl.getOptionValues("RpcCall");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("device", argsArray[0])
-                    .add("cmd", argsArray[1])
-                    .build();
-                dc.RpcCall(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("RpcCall");
+                    String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("device", device)
+                        .add("cmd", argsArray[2])
+                        .build();
+                    dc.RpcCall(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
 
@@ -305,214 +375,280 @@ public class TestJline {
              * *********************************************************/
 
             if (cl.hasOption("ListProjects")) {
-                String retStr = dc.ListProjects();
-                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-                JsonReader jsonReader = Json.createReader(in);
-                JsonObject jobj = jsonReader.readObject();
-                int retcode = jobj.getInt("retcode", -1);
-                if (retcode == 0) {
-                    JsonArray projects = jobj.getJsonArray("projects");
-                    Iterator iter = projects.iterator();
-                    System.out.println("---------------------------------------");
-                    while (iter.hasNext()) {
-                        System.out.println(iter.next().toString());
+                try {
+                    String retStr = dc.ListProjects();
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    JsonObject jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        JsonArray projects = jobj.getJsonArray("projects");
+                        Iterator iter = projects.iterator();
+                        System.out.println("---------------------------------------");
+                        while (iter.hasNext()) {
+                            System.out.println(iter.next().toString());
+                        }
+                        System.out.println("---------------------------------------");
+                        System.out.println("enter -ListDevInProject to get device id");
+                        System.out.println();
                     }
-                    System.out.println("---------------------------------------");
-                    System.out.println("enter -ListDevInProject to get device id");
-                    System.out.println();
-                }
-                else {
-                    System.out.printf("retcode = %d\n", retcode);
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
                 }
                 return 1;
             }
             if (cl.hasOption("AddProject")) {
-                String argsArray[] = cl.getOptionValues("AddProject");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("name", argsArray[0])
-                    .add("vendor", argsArray[1])
-                    .add("info", argsArray[2])
-                    .add("tag", argsArray[3])
-                    .build();
-                dc.AddProject(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("AddProject");
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("name", argsArray[0])
+                        .add("vendor", argsArray[1])
+                        .add("info", argsArray[2])
+                        .add("tag", argsArray[3])
+                        .build();
+                    dc.AddProject(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("GetProjectInfo")) {
-                String projectId = cl.getOptionValue("GetProjectInfo");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("project_id", projectId)
-                    .build();
-                dc.GetProjectInfo(jobj.toString());
+                try {
+                    String projectId = cl.getOptionValue("GetProjectInfo");
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("project_id", projectId)
+                        .build();
+                    String retStr = dc.GetProjectInfo(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        //jobj.remove("retcode");
+                        System.out.println("---------------------------------------");
+                        System.out.println(jobj.toString());
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("UpdateProject")) {
-                String argsArray[] = cl.getOptionValues("UpdateProject");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("project_id", argsArray[0])
-                    .add("name", argsArray[1])
-                    .add("info", argsArray[2])
-                    .add("tag", argsArray[3])
-                    .build();
-                dc.UpdateProject(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("UpdateProject");
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("project_id", argsArray[0])
+                        .add("name", argsArray[1])
+                        .add("info", argsArray[2])
+                        .add("tag", argsArray[3])
+                        .build();
+                    dc.UpdateProject(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("DeleteProject")) {
-                String projectId = cl.getOptionValue("DeleteProject");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("project_id", projectId)
-                    .build();
-                dc.DeleteProject(jobj.toString());
+                try {
+                    String projectId = cl.getOptionValue("DeleteProject");
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("project_id", projectId)
+                        .build();
+                    dc.DeleteProject(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("ListProjectUser")) {
-                String projectId = cl.getOptionValue("ListProjectUser");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("project_id", projectId)
-                    .build();
-                String retStr = dc.ListProjectUser(jobj.toString());
-                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-                JsonReader jsonReader = Json.createReader(in);
-                jobj = jsonReader.readObject();
-                int retcode = jobj.getInt("retcode", -1);
-                if (retcode == 0) {
-                    JsonArray users = jobj.getJsonArray("users");
-                    Iterator iter = users.iterator();
-                    System.out.println("---------------------------------------");
-                    while (iter.hasNext()) {
-                        System.out.println(iter.next().toString());
+                try {
+                    String projectId = cl.getOptionValue("ListProjectUser");
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("project_id", projectId)
+                        .build();
+                    String retStr = dc.ListProjectUser(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        JsonArray users = jobj.getJsonArray("users");
+                        Iterator iter = users.iterator();
+                        System.out.println("---------------------------------------");
+                        while (iter.hasNext()) {
+                            System.out.println(iter.next().toString());
+                        }
+                        System.out.println("---------------------------------------");
+                        System.out.println();
                     }
-                    System.out.println("---------------------------------------");
-                    System.out.println();
-                }
-                else {
-                    System.out.printf("retcode = %d\n", retcode);
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
                 }
                 return 1;
             }
             if (cl.hasOption("ListDevInProject")) {
-                String argsArray[] = cl.getOptionValues("ListDevInProject");
-                String filter = "";
-                if (argsArray.length == 2) {
-                    filter = argsArray[1];
-                }
-                System.out.println(argsArray[0]);
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("project_id", argsArray[0])
-                    .add("filter", filter)
-                    .build();
-                String retStr = dc.ListDevInProject(jobj.toString());
-                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-                JsonReader jsonReader = Json.createReader(in);
-                jobj = jsonReader.readObject();
-                int retcode = jobj.getInt("retcode", -1);
-                if (retcode == 0) {
-                    JsonArray gateways = jobj.getJsonArray("gateways");
-                    Iterator iter = gateways.iterator();
-                    System.out.println("---------------------------------------");
-                    while (iter.hasNext()) {
-                        System.out.println(iter.next().toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("ListDevInProject");
+                    String filter = "";
+                    if (argsArray.length == 2) {
+                        filter = argsArray[1];
                     }
-                    System.out.println("---------------------------------------");
-                    System.out.println();
-                }
-                else {
-                    System.out.printf("retcode = %d\n", retcode);
+                    System.out.println(argsArray[0]);
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("project_id", argsArray[0])
+                        .add("filter", filter)
+                        .build();
+                    String retStr = dc.ListDevInProject(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        JsonArray gateways = jobj.getJsonArray("gateways");
+                        Iterator iter = gateways.iterator();
+                        System.out.println("---------------------------------------");
+                        while (iter.hasNext()) {
+                            System.out.println(iter.next().toString());
+                        }
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
                 }
                 return 1;
             }
             if (cl.hasOption("ListDevByGroup")) {
-                String argsArray[] = cl.getOptionValues("ListDevByGroup");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("project_id", argsArray[0])
-                    .add("group_id", argsArray[1])
-                    .build();
-                dc.ListDevByGroup(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("ListDevByGroup");
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("project_id", argsArray[0])
+                        .add("group_id", argsArray[1])
+                        .build();
+                    dc.ListDevByGroup(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("GetProjectStats")) {
-                String projectId = cl.getOptionValue("GetProjectStats");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("project_id", projectId)
-                    .build();
-                String retStr = dc.GetProjectStats(jobj.toString());
-                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-                JsonReader jsonReader = Json.createReader(in);
-                jobj = jsonReader.readObject();
-                int retcode = jobj.getInt("retcode", -1);
-                if (retcode == 0) {
-                    String stats = jobj.getString("stats");
-                    System.out.println("---------------------------------------");
-                    System.out.println("stats : " + stats);
-                    System.out.println("---------------------------------------");
-                    System.out.println();
-                }
-                else {
-                    System.out.printf("retcode = %d\n", retcode);
+                try {
+                    String projectId = cl.getOptionValue("GetProjectStats");
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("project_id", projectId)
+                        .build();
+                    String retStr = dc.GetProjectStats(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        String stats = jobj.getString("stats");
+                        System.out.println("---------------------------------------");
+                        System.out.println("stats : " + stats);
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
                 }
                 return 1;
             }
 
             if (cl.hasOption("AddDev")) {
-                String argsArray[] = cl.getOptionValues("AddDev");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("project_id", argsArray[0])
-                    .add("device_hw_id", argsArray[1])
-                    .add("tag", argsArray[2])
-                    .add("name", argsArray[3])
-                    .add("vendor", argsArray[4])
-                    .add("systeminfo", argsArray[5])
-                    .add("location", argsArray[6])
-                    .add("groupids", argsArray[7])
-                    .build();
-                dc.AddDev(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("AddDev");
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("project_id", argsArray[0])
+                        .add("device_hw_id", argsArray[1])
+                        .add("tag", argsArray[2])
+                        .add("name", argsArray[3])
+                        .add("vendor", argsArray[4])
+                        .add("systeminfo", argsArray[5])
+                        .add("location", argsArray[6])
+                        .add("groupids", argsArray[7])
+                        .build();
+                    dc.AddDev(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("UpdateDev")) {
-                String argsArray[] = cl.getOptionValues("UpdateDev");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("project_id", argsArray[0])
-                    .add("gateway_id", argsArray[1])
-                    .add("device_hw_id", argsArray[2])
-                    .add("tag", argsArray[3])
-                    .add("name", argsArray[4])
-                    .add("vendor", argsArray[5])
-                    .add("systeminfo", argsArray[7])
-                    .add("location", argsArray[8])
-                    .add("groupids", argsArray[9])
-                    .build();
-                dc.UpdateDev(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("UpdateDev");
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("project_id", argsArray[0])
+                        .add("gateway_id", argsArray[1])
+                        .add("device_hw_id", argsArray[2])
+                        .add("tag", argsArray[3])
+                        .add("name", argsArray[4])
+                        .add("vendor", argsArray[5])
+                        .add("systeminfo", argsArray[7])
+                        .add("location", argsArray[8])
+                        .add("groupids", argsArray[9])
+                        .build();
+                    dc.UpdateDev(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
             if (cl.hasOption("GetDevInfo")) {
-                String argsArray[] = cl.getOptionValues("GetDevInfo");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("project_id", argsArray[0])
-                    .add("gateway_id", argsArray[1])
-                    .build();
-                String retStr = dc.GetDevInfo(jobj.toString());
-                ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-                JsonReader jsonReader = Json.createReader(in);
-                jobj = jsonReader.readObject();
-                int retcode = jobj.getInt("retcode", -1);
-                if (retcode == 0) {
-                    //jobj.remove("retcode");
-                    System.out.println("---------------------------------------");
-                    System.out.println(jobj.toString());
-                    System.out.println("---------------------------------------");
-                    System.out.println();
-                }
-                else {
-                    System.out.printf("retcode = %d\n", retcode);
+                try {
+                    String argsArray[] = cl.getOptionValues("GetDevInfo");
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("project_id", argsArray[0])
+                        .add("gateway_id", argsArray[1])
+                        .build();
+                    String retStr = dc.GetDevInfo(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        //jobj.remove("retcode");
+                        System.out.println("---------------------------------------");
+                        System.out.println(jobj.toString());
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
                 }
                 return 1;
             }
             if (cl.hasOption("DeleteDev")) {
-                String argsArray[] = cl.getOptionValues("DeleteDev");
-                JsonObject jobj = Json.createObjectBuilder()
-                    .add("project_id", argsArray[0])
-                    .add("gateway_id", argsArray[1])
-                    .build();
-                dc.DeleteDev(jobj.toString());
+                try {
+                    String argsArray[] = cl.getOptionValues("DeleteDev");
+                    JsonObject jobj = Json.createObjectBuilder()
+                        .add("project_id", argsArray[0])
+                        .add("gateway_id", argsArray[1])
+                        .build();
+                    dc.DeleteDev(jobj.toString());
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("lack of args.");
+                }
                 return 1;
             }
         } catch (ParseException e) {
@@ -541,86 +677,86 @@ public class TestJline {
         GetVer =
             OptionBuilder
                 .withDescription("get version of gateway")
-                .withArgName("device")
-                .hasArgs(1)
+                .withArgName("project_id> <device_id")
+                .hasArgs(2)
                 .create("GetVer");
         GetCfg =
             OptionBuilder
                 .withDescription("get configuration of gateway")
-                .withArgName("device")
-                .hasArgs(1)
+                .withArgName("project_id> <device_id")
+                .hasArgs(2)
                 .create("GetCfg");
         SetCfg =
             OptionBuilder
                 .withDescription("configure gateway")
-                .withArgName("device> <config")
-                .hasArgs(2)
+                .withArgName("project_id> <device_id> <config")
+                .hasArgs(3)
                 .create("SetCfg");
         Ping =
             OptionBuilder
                 .withDescription("detect device's status")
-                .withArgName("device")
-                .hasArgs(1)
+                .withArgName("project_id> <device_id")
+                .hasArgs(2)
                 .create("Ping");
         UpdateFirmware =
             OptionBuilder
                 .withDescription("update firmware of gateway")
-                .withArgName("device> <srcaddr> <version")
-                .hasArgs(3)
+                .withArgName("project_id> <device_id> <srcaddr> <version")
+                .hasArgs(4)
                 .create("UpdateFirmware");
         system =
             OptionBuilder
                 .withDescription("run System cmd")
-                .withArgName("device> <cmd")
-                .hasArgs(2)
+                .withArgName("project_id> <device_id> <cmd")
+                .hasArgs(3)
                 .create("System");
         GetAppList =
             OptionBuilder
                 .withDescription("get application list")
-                .withArgName("device")
-                .hasArgs(1)
+                .withArgName("project_id> <device_id")
+                .hasArgs(2)
                 .create("GetAppList");
         StartApp =
             OptionBuilder
                 .withDescription("start application")
-                .withArgName("device> <name> <params")
-                .hasArgs(3)
+                .withArgName("project_id> <device_id> <name> <params")
+                .hasArgs(4)
                 .create("StartApp");
         StopApp =
             OptionBuilder
                 .withDescription("stop application")
-                .withArgName("device> <name")
-                .hasArgs(2)
+                .withArgName("project_id> <device_id> <name")
+                .hasArgs(3)
                 .create("StopApp");
         InstallApp =
             OptionBuilder
                 .withDescription("install application")
-                .withArgName("device> <apppath")
-                .hasArgs(2)
+                .withArgName("project_id> <device_id> <apppath")
+                .hasArgs(3)
                 .create("InstallApp");
         Reboot =
             OptionBuilder
                 .withDescription("reboot device")
-                .withArgName("device")
-                .hasArgs(1)
-                .create("Reboot");
+                .withArgName("project_id> <device_id")
+                .hasArgs(2)
+                .create("GetAppList");
         Filec2d =
             OptionBuilder
                 .withDescription("tansfer file from cloud to device")
-                .withArgName("device> <src> <dest")
-                .hasArgs(3)
+                .withArgName("project_id> <device_id> <src> <dest")
+                .hasArgs(4)
                 .create("Filec2d");
         Filed2c =
             OptionBuilder
                 .withDescription("tansfer file from device to cloud")
-                .withArgName("device> <src> <dest")
-                .hasArgs(3)
+                .withArgName("project_id> <device_id> <src> <dest")
+                .hasArgs(4)
                 .create("Filed2c");
         RpcCall =
             OptionBuilder
                 .withDescription("call device's RPC")
-                .withArgName("device> <cmd")
-                .hasArgs(2)
+                .withArgName("project_id> <device_id> <cmd")
+                .hasArgs(3)
                 .create("RpcCall");
 
         ListProjects =
@@ -687,7 +823,7 @@ public class TestJline {
                 .withDescription("update device")
                 .withArgName("project_id> <gateway_id> <device_hw_id> <tag> <name> <vendor> <systeminfo> <location> <groupids")
                 .hasArgs(9)
-                .create("AddDev");
+                .create("UpdateDev");
         GetDevInfo =
             OptionBuilder
                 .withDescription("get device information")
