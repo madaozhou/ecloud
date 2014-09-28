@@ -1,3 +1,7 @@
+package com.intel.iotg.ecloud.cli;
+
+import com.intel.iotg.ecloud.cli.DeviceControl;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedList;
