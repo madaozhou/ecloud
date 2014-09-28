@@ -62,7 +62,7 @@ public class TestJline {
                 cli.cons.addCompleter(c);
             }
             System.out.println("Hi, welcome to Ecloud!");
-            System.out.println("enter -helo for help.");
+            System.out.println("enter -help for help.");
             PrintWriter writer = new PrintWriter(cli.cons.getOutput());
             cli.cons.setPrompt("Ecloud ");
             while (true) {
@@ -273,12 +273,29 @@ public class TestJline {
                 try {
                     String argsArray[] = cl.getOptionValues("StartApp");
                     String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
+                    String params = "";
+                    if (argsArray.length == 4) {
+                        params = argsArray[3];
+                    }
                     JsonObject jobj = Json.createObjectBuilder()
                         .add("device", device)
                         .add("name", argsArray[2])
-                        .add("params", argsArray[3])
+                        .add("params", params)
                         .build();
-                    dc.StartApp(jobj.toString());
+                    String retStr = dc.StartApp(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        System.out.println("---------------------------------------");
+                        System.out.println(argsArray[2] + " started.");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -292,7 +309,20 @@ public class TestJline {
                         .add("device", device)
                         .add("name", argsArray[2])
                         .build();
-                    dc.StopApp(jobj.toString());
+                    String retStr = dc.StopApp(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        System.out.println("---------------------------------------");
+                        System.out.println(argsArray[2] + " stoped.");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -306,7 +336,20 @@ public class TestJline {
                         .add("device", device)
                         .add("apppath", argsArray[2])
                         .build();
-                    dc.InstallApp(jobj.toString());
+                    String retStr = dc.InstallApp(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        System.out.println("---------------------------------------");
+                        System.out.println("App installed");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -319,7 +362,20 @@ public class TestJline {
                     JsonObject jobj = Json.createObjectBuilder()
                         .add("device", device)
                         .build();
-                    dc.Reboot(jobj.toString());
+                    String retStr = dc.Reboot(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        System.out.println("---------------------------------------");
+                        System.out.println("Reboot is scheduled");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -409,7 +465,20 @@ public class TestJline {
                         .add("info", argsArray[2])
                         .add("tag", argsArray[3])
                         .build();
-                    dc.AddProject(jobj.toString());
+                    String retStr = dc.AddProject(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        System.out.println("---------------------------------------");
+                        System.out.println("added project_id : " + argsArray[0]);
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -450,7 +519,24 @@ public class TestJline {
                         .add("info", argsArray[2])
                         .add("tag", argsArray[3])
                         .build();
-                    dc.UpdateProject(jobj.toString());
+                    String retStr = dc.UpdateProject(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        jobj = Json.createObjectBuilder()
+                            .add("project_id", argsArray[0])
+                            .build();
+                        retStr = dc.GetProjectInfo(jobj.toString());
+                        System.out.println("---------------------------------------");
+                        System.out.println(retStr);
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -462,7 +548,20 @@ public class TestJline {
                     JsonObject jobj = Json.createObjectBuilder()
                         .add("project_id", projectId)
                         .build();
-                    dc.DeleteProject(jobj.toString());
+                    String retStr = dc.DeleteProject(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        System.out.println("---------------------------------------");
+                        System.out.println(projectId + " is deleted.");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -504,7 +603,6 @@ public class TestJline {
                     if (argsArray.length == 2) {
                         filter = argsArray[1];
                     }
-                    System.out.println(argsArray[0]);
                     JsonObject jobj = Json.createObjectBuilder()
                         .add("project_id", argsArray[0])
                         .add("filter", filter)
@@ -585,7 +683,20 @@ public class TestJline {
                         .add("location", argsArray[6])
                         .add("groupids", argsArray[7])
                         .build();
-                    dc.AddDev(jobj.toString());
+                    String retStr = dc.AddDev(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        System.out.println("---------------------------------------");
+                        System.out.println("Success.");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -605,7 +716,25 @@ public class TestJline {
                         .add("location", argsArray[8])
                         .add("groupids", argsArray[9])
                         .build();
-                    dc.UpdateDev(jobj.toString());
+                    String retStr = dc.UpdateDev(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        jobj = Json.createObjectBuilder()
+                            .add("project_id", argsArray[0])
+                            .add("gateway_id", argsArray[1])
+                            .build();
+                        retStr = dc.GetDevInfo(jobj.toString());
+                        System.out.println("---------------------------------------");
+                        System.out.println(retStr);
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -645,7 +774,20 @@ public class TestJline {
                         .add("project_id", argsArray[0])
                         .add("gateway_id", argsArray[1])
                         .build();
-                    dc.DeleteDev(jobj.toString());
+                    String retStr = dc.DeleteDev(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        System.out.println("---------------------------------------");
+                        System.out.println(argsArray[1] + " is deleted.");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        System.out.printf("retcode = %d\n", retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
