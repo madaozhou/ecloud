@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.io.ByteArrayInputStream;
 import java.lang.Thread;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.io.*;
 
 import javax.json.*;
 
@@ -24,7 +26,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.http.entity.ByteArrayEntity;
 
 public class Post {
-    public void ApiResponseParser(String URL, String json_str) throws Exception{
+    public void ApiResponseParser(String URL, String json_str) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         try {
             //System.out.println("Post URL:");
@@ -85,7 +87,7 @@ public class Post {
                         try {
                             Thread.sleep(time_out);
                         } catch(InterruptedException e) {
-                            System.out.println(e.toString());
+                            System.out.println(e.getMessage());
                         }
                         JsonObject tmpJobj = Json.createObjectBuilder()
                             .add("api_qid", api_qid)
@@ -98,13 +100,32 @@ public class Post {
                         System.out.printf("Unknown code:    %d\n", retcode);
                     }
                 }
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            } catch (IllegalStateException e) {
+                System.out.println(e.getMessage());
+            } catch (JsonException e) {
+                System.out.println(e.getMessage());
             } finally {
                 apiResponse.close();
             }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Url is invalid, reason : " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+        } catch (JsonException e) {
+            System.out.println(e.getMessage());
         } finally {
-            httpClient.close();
+            try {
+                httpClient.close();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
+
 
     public void SetBaseUrl(String BaseUrl) {
         this.BaseUrl = BaseUrl;
@@ -138,13 +159,13 @@ public class Post {
         return retcode;
     }
 
-    private String GetAPIStatus(String json_str) throws Exception{
+    private String GetAPIStatus(String json_str) {
         String URL = BaseUrl + DeviceManagementUrl + "/getapistatus";
         ApiResponseParser(URL, json_str);
         return status;
     }
 
-    private void LoginResponse() throws Exception{
+    private void LoginResponse() {
         String str1 = password + salt;
         //System.out.println(str1);
         try {
@@ -165,8 +186,10 @@ public class Post {
             String URL = BaseUrl + "v1/admin/user/userlogin2";
             String json_str = jobj.toString();
             ApiResponseParser(URL, json_str);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println(e.getMessage());
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
         }
     }
 

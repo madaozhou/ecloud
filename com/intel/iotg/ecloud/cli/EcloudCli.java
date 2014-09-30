@@ -23,62 +23,66 @@ import org.apache.commons.cli.Options;
 import javax.json.*;
 
 public class EcloudCli {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) {
         EcloudCli cli = new EcloudCli();
-        cli.cons = new ConsoleReader();
-        cli.completors = new LinkedList<Completer>();
-        cli.completors.add(new StringsCompleter(
-                    "-h",
-                    "-help",
-                    "-q",
-                    "-quit",
-                    "-Login",
-                    "-ListProjects",
-                    "-AddProject",
-                    "-UpdateProject",
-                    "-GetProjectInfo",
-                    "-DeleteProject",
-                    "-GetProjectStats",
-                    "-ListProjectUser",
-                    "-ListDevInProject",
-                    "-ListDevByGroup",
-                    "-GetVer",
-                    "-GetCfg",
-                    "-SetCfg",
-                    "-Ping",
-                    "-UpdateFirmware",
-                    "-System",
-                    "-GetAppList",
-                    "-StartApp",
-                    "-StopApp",
-                    "-InstallApp",
-                    "-Reboot",
-                    "-Filec2d",
-                    "-Filed2c",
-                    "-RpcCall",
-                    "-AddDev",
-                    "-UpdateDev",
-                    "-GetDevInfo",
-                    "-DeleteDev"
-                    ));
-        if (cli.cons != null) {
-            for (Completer c : cli.completors) {
-                cli.cons.addCompleter(c);
+        try {
+            cli.cons = new ConsoleReader();
+            cli.completors = new LinkedList<Completer>();
+            cli.completors.add(new StringsCompleter(
+                        "-h",
+                        "-help",
+                        "-q",
+                        "-quit",
+                        "-Login",
+                        "-ListProjects",
+                        "-AddProject",
+                        "-UpdateProject",
+                        "-GetProjectInfo",
+                        "-DeleteProject",
+                        "-GetProjectStats",
+                        "-ListProjectUser",
+                        "-ListDevInProject",
+                        "-ListDevByGroup",
+                        "-GetVer",
+                        "-GetCfg",
+                        "-SetCfg",
+                        "-Ping",
+                        "-UpdateFirmware",
+                        "-System",
+                        "-GetAppList",
+                        "-StartApp",
+                        "-StopApp",
+                        "-InstallApp",
+                        "-Reboot",
+                        "-Filec2d",
+                        "-Filed2c",
+                        "-RpcCall",
+                        "-AddDev",
+                        "-UpdateDev",
+                        "-GetDevInfo",
+                        "-DeleteDev"
+                        ));
+            if (cli.cons != null) {
+                for (Completer c : cli.completors) {
+                    cli.cons.addCompleter(c);
+                }
+                System.out.println("Hi, welcome to Ecloud!");
+                System.out.println("enter -help for help.");
+                PrintWriter writer = new PrintWriter(cli.cons.getOutput());
+                cli.cons.setPrompt("Ecloud ");
+                while (true) {
+                    String str1 = cli.cons.readLine();
+                    String[] inputArgs = str1.split(" ");
+                    if (cli.engine(inputArgs) == 0)
+                        break;
+                }
             }
-            System.out.println("Hi, welcome to Ecloud!");
-            System.out.println("enter -help for help.");
-            PrintWriter writer = new PrintWriter(cli.cons.getOutput());
-            cli.cons.setPrompt("Ecloud ");
-            while (true) {
-                String str1 = cli.cons.readLine();
-                String[] inputArgs = str1.split(" ");
-                if (cli.engine(inputArgs) == 0)
-                    break;
-            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    public int engine(String[] args) throws Exception{
+    public int engine(String[] args) {
         parser = new BasicParser();
         try {
             cl = parser.parse(options, args);
@@ -115,9 +119,9 @@ public class EcloudCli {
                 return 1;
             }
 
-            /* **********************************************************
+            /**
              * Device management
-             * *********************************************************/
+             **/
 
             if (cl.hasOption("GetVer")) {
                 try {
@@ -141,7 +145,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -168,7 +176,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -196,7 +208,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -223,7 +239,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -252,7 +272,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -280,7 +304,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -299,7 +327,7 @@ public class EcloudCli {
                     int retcode = jobj.getInt("retcode", -1);
                     if (retcode == 0) {
                         JsonArray apps = jobj.getJsonArray("apps");
-                        Iterator iter = apps.iterator();
+                        Iterator<JsonValue> iter = apps.iterator();
                         System.out.println("---------------------------------------");
                         while (iter.hasNext()) {
                             System.out.println(iter.next().toString());
@@ -310,7 +338,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -342,7 +374,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -369,7 +405,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -396,7 +436,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -422,7 +466,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -451,7 +499,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -480,7 +532,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -508,15 +564,19 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
             }
 
-            /* **********************************************************
+            /**
              * project managment
-             * *********************************************************/
+             **/
 
             if (cl.hasOption("ListProjects")) {
                 try {
@@ -527,7 +587,7 @@ public class EcloudCli {
                     int retcode = jobj.getInt("retcode", -1);
                     if (retcode == 0) {
                         JsonArray projects = jobj.getJsonArray("projects");
-                        Iterator iter = projects.iterator();
+                        Iterator<JsonValue> iter = projects.iterator();
                         System.out.println("---------------------------------------");
                         while (iter.hasNext()) {
                             System.out.println(iter.next().toString());
@@ -539,7 +599,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -567,7 +631,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -593,7 +661,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -625,7 +697,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -650,7 +726,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -668,7 +748,7 @@ public class EcloudCli {
                     int retcode = jobj.getInt("retcode", -1);
                     if (retcode == 0) {
                         JsonArray users = jobj.getJsonArray("users");
-                        Iterator iter = users.iterator();
+                        Iterator<JsonValue> iter = users.iterator();
                         System.out.println("---------------------------------------");
                         while (iter.hasNext()) {
                             System.out.println(iter.next().toString());
@@ -679,7 +759,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -702,7 +786,7 @@ public class EcloudCli {
                     int retcode = jobj.getInt("retcode", -1);
                     if (retcode == 0) {
                         JsonArray gateways = jobj.getJsonArray("gateways");
-                        Iterator iter = gateways.iterator();
+                        Iterator<JsonValue> iter = gateways.iterator();
                         System.out.println("---------------------------------------");
                         while (iter.hasNext()) {
                             System.out.println(iter.next().toString());
@@ -713,7 +797,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -726,7 +814,11 @@ public class EcloudCli {
                         .add("group_id", argsArray[1])
                         .build();
                     dc.ListDevByGroup(jobj.toString());
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -752,11 +844,19 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
             }
+
+            /**
+             * gateway managment
+             **/
 
             if (cl.hasOption("AddDev")) {
                 try {
@@ -785,7 +885,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -823,7 +927,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -850,7 +958,11 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
@@ -876,13 +988,19 @@ public class EcloudCli {
                     else {
                         CodePaser(retcode);
                     }
-                }catch (ArrayIndexOutOfBoundsException e) {
+                } catch (JsonException e) {
+                    System.err.println(e.getMessage());
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
                 return 1;
             }
         } catch (ParseException e) {
             System.err.println("Parsing failed. Reason: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
         }
         return 1;
     }
