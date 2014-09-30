@@ -139,7 +139,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -166,7 +166,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -181,7 +181,21 @@ public class EcloudCli {
                         .add("device", device)
                         .add("config", argsArray[2])
                         .build();
-                    dc.SetCfg(jobj.toString());
+                    String retStr = dc.SetCfg(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        String version = jobj.getString("cfg");
+                        System.out.println("---------------------------------------");
+                        System.out.println("Success.");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        CodePaser(retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -207,7 +221,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -223,7 +237,21 @@ public class EcloudCli {
                         .add("srcaddr", argsArray[2])
                         .add("version", argsArray[3])
                         .build();
-                    dc.UpdateFirmware(jobj.toString());
+                    String retStr = dc.UpdateFirmware(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        String version = jobj.getString("cfg");
+                        System.out.println("---------------------------------------");
+                        System.out.println("Success.");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        CodePaser(retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -237,7 +265,21 @@ public class EcloudCli {
                         .add("device", device)
                         .add("cmd", argsArray[2])
                         .build();
-                    dc.System(jobj.toString());
+                    String retStr = dc.System(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        String version = jobj.getString("cfg");
+                        System.out.println("---------------------------------------");
+                        System.out.println("Success.");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        CodePaser(retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -266,7 +308,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -298,7 +340,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -325,7 +367,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -352,7 +394,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -378,7 +420,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -394,7 +436,21 @@ public class EcloudCli {
                         .add("src", argsArray[2])
                         .add("dest", argsArray[3])
                         .build();
-                    dc.Filec2d(jobj.toString());
+                    String retStr = dc.Filec2d(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        String version = jobj.getString("cfg");
+                        System.out.println("---------------------------------------");
+                        System.out.println("Success.");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        CodePaser(retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -409,7 +465,21 @@ public class EcloudCli {
                         .add("src", argsArray[2])
                         .add("dest", argsArray[3])
                         .build();
-                    dc.Filed2c(jobj.toString());
+                    String retStr = dc.Filed2c(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        String version = jobj.getString("cfg");
+                        System.out.println("---------------------------------------");
+                        System.out.println("Success.");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        CodePaser(retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -423,7 +493,21 @@ public class EcloudCli {
                         .add("device", device)
                         .add("cmd", argsArray[2])
                         .build();
-                    dc.RpcCall(jobj.toString());
+                    String retStr = dc.RpcCall(jobj.toString());
+                    ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
+                    JsonReader jsonReader = Json.createReader(in);
+                    jobj = jsonReader.readObject();
+                    int retcode = jobj.getInt("retcode", -1);
+                    if (retcode == 0) {
+                        String version = jobj.getString("cfg");
+                        System.out.println("---------------------------------------");
+                        System.out.println("Success.");
+                        System.out.println("---------------------------------------");
+                        System.out.println();
+                    }
+                    else {
+                        CodePaser(retcode);
+                    }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
                 }
@@ -453,7 +537,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -481,7 +565,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -507,7 +591,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -539,7 +623,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -564,7 +648,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -593,7 +677,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -627,7 +711,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -666,7 +750,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -699,7 +783,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -737,7 +821,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -764,7 +848,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -790,7 +874,7 @@ public class EcloudCli {
                         System.out.println();
                     }
                     else {
-                        System.out.printf("retcode = %d\n", retcode);
+                        CodePaser(retcode);
                     }
                 }catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("lack of args.");
@@ -1019,6 +1103,29 @@ public class EcloudCli {
     private void helpPage() {
         formatter.setWidth(200);
         formatter.printHelp("Ecloud", options);
+    }
+
+    private void CodePaser(int retcode) {
+        switch (retcode) {
+            case 10001:
+                System.out.println("no such method!");
+                break;
+            case 10002:
+                System.out.println("invalid argument!");
+                break;
+            case 10003:
+                System.out.println("unauthorized!");
+                break;
+            case 10004:
+                System.out.println("device error!");
+                break;
+            case 10005:
+                System.out.println("server error!");
+                break;
+            default:
+                System.out.println("unknown error code!");
+                break;
+        }
     }
 
     private ConsoleReader cons;
