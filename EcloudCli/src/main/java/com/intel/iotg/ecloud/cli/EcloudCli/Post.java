@@ -26,6 +26,93 @@ import org.apache.http.util.EntityUtils;
 import org.apache.http.entity.ByteArrayEntity;
 
 public class Post {
+    private int retcode = -1;
+    private String api_qid;
+    private int time_out;
+
+    private String auth_token;
+    private String username;
+    private String password;
+    private String login_id;
+    private String challenge;
+    private String algorithm;
+    private String salt;
+
+    private String response;
+    private String status;
+
+    private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6',
+        '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+    private String BaseUrl;
+    private String DeviceManagementUrl;
+
+    public void SetBaseUrl(String BaseUrl) {
+        this.BaseUrl = BaseUrl;
+    }
+
+    public void SetDeviceManagementUrl (String DeviceManagementUrl) {
+        this.DeviceManagementUrl = DeviceManagementUrl;
+    }
+
+    public void SetUserName(String username) {
+        this.username = username;
+    }
+
+    public void SetPassWord(String password) {
+        this.password = password;
+    }
+
+    public String GetToken() {
+        return auth_token;
+    }
+
+    public String GetStatus() {
+        return status;
+    }
+
+    public String GetResponse() {
+        return response;
+    }
+
+    public int GetRetCode() {
+        return retcode;
+    }
+
+    private String GetAPIStatus(String json_str) {
+        String URL = BaseUrl + DeviceManagementUrl + "/getapistatus";
+        ApiResponseParser(URL, json_str);
+        return status;
+    }
+
+    private void LoginResponse() {
+        String str1 = password + salt;
+        //System.out.println(str1);
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
+            messageDigest.update(str1.getBytes());
+            String hash1 = GetFormattedText(messageDigest.digest());
+            //System.out.println(hash1);
+            String str2 = hash1 + challenge;
+            //System.out.println(str2);
+            messageDigest.update(str2.getBytes());
+            String hash2 = GetFormattedText(messageDigest.digest());
+            //System.out.println(hash2);
+            JsonObject jobj = Json.createObjectBuilder()
+                .add("username", username)
+                .add("login_id", login_id)
+                .add("response", hash2)
+                .build();
+            String URL = BaseUrl + "v1/admin/user/userlogin2";
+            String json_str = jobj.toString();
+            ApiResponseParser(URL, json_str);
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println(e.getMessage());
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void ApiResponseParser(String URL, String json_str) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         try {
@@ -126,73 +213,6 @@ public class Post {
         }
     }
 
-
-    public void SetBaseUrl(String BaseUrl) {
-        this.BaseUrl = BaseUrl;
-    }
-
-    public void SetDeviceManagementUrl (String DeviceManagementUrl) {
-        this.DeviceManagementUrl = DeviceManagementUrl;
-    }
-
-    public void SetUserName(String username) {
-        this.username = username;
-    }
-
-    public void SetPassWord(String password) {
-        this.password = password;
-    }
-
-    public String GetToken() {
-        return auth_token;
-    }
-
-    public String GetStatus() {
-        return status;
-    }
-
-    public String GetResponse() {
-        return response;
-    }
-
-    public int GetRetCode() {
-        return retcode;
-    }
-
-    private String GetAPIStatus(String json_str) {
-        String URL = BaseUrl + DeviceManagementUrl + "/getapistatus";
-        ApiResponseParser(URL, json_str);
-        return status;
-    }
-
-    private void LoginResponse() {
-        String str1 = password + salt;
-        //System.out.println(str1);
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
-            messageDigest.update(str1.getBytes());
-            String hash1 = GetFormattedText(messageDigest.digest());
-            //System.out.println(hash1);
-            String str2 = hash1 + challenge;
-            //System.out.println(str2);
-            messageDigest.update(str2.getBytes());
-            String hash2 = GetFormattedText(messageDigest.digest());
-            //System.out.println(hash2);
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("username", username)
-                .add("login_id", login_id)
-                .add("response", hash2)
-                .build();
-            String URL = BaseUrl + "v1/admin/user/userlogin2";
-            String json_str = jobj.toString();
-            ApiResponseParser(URL, json_str);
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println(e.getMessage());
-        } catch (NullPointerException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     private String GetFormattedText(byte[] bytes) {
         int len = bytes.length;
         StringBuilder buf = new StringBuilder(len * 2);
@@ -202,25 +222,4 @@ public class Post {
         }
         return buf.toString();
     }
-
-    private int retcode = -1;
-    private String api_qid;
-    private int time_out;
-
-    private String auth_token;
-    private String username;
-    private String password;
-    private String login_id;
-    private String challenge;
-    private String algorithm;
-    private String salt;
-
-    private String response;
-    private String status;
-
-    private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6',
-        '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-
-    private String BaseUrl;
-    private String DeviceManagementUrl;
 }

@@ -13,6 +13,20 @@ import javax.json.*;
 
 
 public class DeviceControl{
+    private String auth_token;
+    private String username;
+    private String password;
+
+    private static final String BaseUrl =
+        "http://115.29.204.44:8080/ecloud/";
+    private static final String DeviceManagementUrl = "v1/dev/ctl";
+    private static final String ProjectManagementUrl = "v1/admin/project";
+    private static final String GatewayManagementUrl = "v1/admin/dev";
+    private static final String UserManagementUrl = "v1/admin/user";
+    private static final String GroupManagementUrl = "v1/admin/group";
+
+    private Post APost;
+
     public DeviceControl() {
         APost = new Post();
         APost.SetBaseUrl(BaseUrl);
@@ -632,19 +646,5 @@ public class DeviceControl{
     public String getToken() {
         return auth_token;
     }
-
-    private String auth_token;
-    private String username;
-    private String password;
-
-    private static final String BaseUrl =
-        "http://115.29.204.44:8080/ecloud/";
-    private static final String DeviceManagementUrl = "v1/dev/ctl";
-    private static final String ProjectManagementUrl = "v1/admin/project";
-    private static final String GatewayManagementUrl = "v1/admin/dev";
-    private static final String UserManagementUrl = "v1/admin/user";
-    private static final String GroupManagementUrl = "v1/admin/group";
-
-    private Post APost;
 }
 

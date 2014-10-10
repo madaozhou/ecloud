@@ -23,6 +23,48 @@ import org.apache.commons.cli.Options;
 import javax.json.*;
 
 public class EcloudCli {
+    private ConsoleReader cons;
+    private List<Completer> completors;
+    private Options options;
+    private CommandLine cl;
+    private BasicParser parser;
+    private HelpFormatter formatter;
+    private DeviceControl dc;
+
+    private Option help;
+    private Option quit;
+    private Option Login;
+
+    private Option ListProjects;
+    private Option AddProject;
+    private Option GetProjectInfo;
+    private Option UpdateProject;
+    private Option DeleteProject;
+    private Option ListProjectUser;
+    private Option ListDevInProject;
+    private Option ListDevByGroup;
+    private Option GetProjectStats;
+
+    private Option GetVer;
+    private Option GetCfg;
+    private Option SetCfg;
+    private Option Ping;
+    private Option UpdateFirmware;
+    private Option system;
+    private Option GetAppList;
+    private Option StartApp;
+    private Option StopApp;
+    private Option InstallApp;
+    private Option Reboot;
+    private Option Filec2d;
+    private Option Filed2c;
+    private Option RpcCall;
+
+    private Option AddDev;
+    private Option UpdateDev;
+    private Option GetDevInfo;
+    private Option DeleteDev;
+
     public static void main(String[] args) {
         EcloudCli cli = new EcloudCli();
         try {
@@ -1245,46 +1287,4 @@ public class EcloudCli {
                 break;
         }
     }
-
-    private ConsoleReader cons;
-    List<Completer> completors;
-    private Options options;
-    private CommandLine cl;
-    private BasicParser parser;
-    private HelpFormatter formatter;
-    private DeviceControl dc;
-
-    private Option help;
-    private Option quit;
-    private Option Login;
-
-    private Option ListProjects;
-    private Option AddProject;
-    private Option GetProjectInfo;
-    private Option UpdateProject;
-    private Option DeleteProject;
-    private Option ListProjectUser;
-    private Option ListDevInProject;
-    private Option ListDevByGroup;
-    private Option GetProjectStats;
-
-    private Option GetVer;
-    private Option GetCfg;
-    private Option SetCfg;
-    private Option Ping;
-    private Option UpdateFirmware;
-    private Option system;
-    private Option GetAppList;
-    private Option StartApp;
-    private Option StopApp;
-    private Option InstallApp;
-    private Option Reboot;
-    private Option Filec2d;
-    private Option Filed2c;
-    private Option RpcCall;
-
-    private Option AddDev;
-    private Option UpdateDev;
-    private Option GetDevInfo;
-    private Option DeleteDev;
 }
