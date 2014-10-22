@@ -410,7 +410,7 @@ public class DeviceControl{
     }
 
     public String GetUserInfo(String json_str) {
-        String URL = BaseUrl + UserManagementUrl + "/getuserinfo";
+        String URL = BaseUrl + UserManagementUrl + "/getusrinfo";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
