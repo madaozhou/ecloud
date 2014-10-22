@@ -152,6 +152,8 @@ public class EcloudCli {
                 int retcode = dc.Login(json_str);
                 cons.setPrompt(null);
                 if (retcode == 0) {
+                    String ret = dc.GetUserInfo(json_str);
+
                     System.out.println("Login success, enter -ListProjects to get project list.");
                 }
                 else {
@@ -168,6 +170,9 @@ public class EcloudCli {
             if (cl.hasOption("GetVer")) {
                 try {
                     String argsArray[] = cl.getOptionValues("GetVer");
+                    if (argsArray.length == 0) {
+                        System.out.println("");
+                    }
                     String device = "/dev/ctl/" + "/" + argsArray[0] + "/" + argsArray[1];
                     JsonObject jobj = Json.createObjectBuilder()
                         .add("device", device)
@@ -1068,7 +1073,7 @@ public class EcloudCli {
             OptionBuilder
                 .withDescription("get version of gateway")
                 .withArgName("project_id> <device_id")
-                .hasArgs(2)
+                .hasOptionalArgs(2)
                 .create("GetVer");
         GetCfg =
             OptionBuilder
