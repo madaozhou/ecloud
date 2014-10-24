@@ -319,7 +319,7 @@ public class DeviceControl{
     }
 
     public String ListProjectUser(String json_str) {
-        String URL = BaseUrl + ProjectManagementUrl + "/listprojectuser";
+        String URL = BaseUrl + ProjectManagementUrl + "/listprojectusers";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
