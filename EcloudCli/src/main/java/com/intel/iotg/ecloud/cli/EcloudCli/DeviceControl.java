@@ -24,6 +24,9 @@ public class DeviceControl{
     private static final String GatewayManagementUrl = "v1/admin/dev";
     private static final String UserManagementUrl = "v1/admin/user";
     private static final String GroupManagementUrl = "v1/admin/group";
+    private static final String LogManagementUrl = "v1/logs";
+    private static final String AlertManagementUrl = "v1/admin/alert";
+    private static final String DataManagementUrl = "v1/data";
 
     private Post APost;
 
@@ -382,6 +385,18 @@ public class DeviceControl{
         return APost.GetResponse();
     }
 
+    public String GetDevKey(String json_str) {
+        String URL = BaseUrl + GatewayManagementUrl + "/getdevkey";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        APost.ApiResponseParser(URL, json_str);
+        return APost.GetResponse();
+    }
+
     /**
      * user management api
      */
@@ -560,7 +575,7 @@ public class DeviceControl{
      * data point management api
      */
     public String AddDataPoint(String json_str) {
-        String URL = BaseUrl + DeviceManagementUrl + "/adddatapoint";
+        String URL = BaseUrl + GatewayManagementUrl + "/adddatapoint";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -572,7 +587,7 @@ public class DeviceControl{
     }
 
     public String UpdateDataPoint(String json_str) {
-        String URL = BaseUrl + DeviceManagementUrl + "/updatedatapoint";
+        String URL = BaseUrl + GatewayManagementUrl + "/updatedatapoint";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -584,7 +599,7 @@ public class DeviceControl{
     }
 
     public String DeleteDataPoint(String json_str) {
-        String URL = BaseUrl + DeviceManagementUrl + "/deletedatapoint";
+        String URL = BaseUrl + GatewayManagementUrl + "/deletedatapoint";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -596,7 +611,7 @@ public class DeviceControl{
     }
 
     public String GetDataPointInfo(String json_str) {
-        String URL = BaseUrl + DeviceManagementUrl + "/getdatapointinfo";
+        String URL = BaseUrl + GatewayManagementUrl + "/getdatapointinfo";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -608,7 +623,7 @@ public class DeviceControl{
     }
 
     public String ListDataPoints(String json_str) {
-        String URL = BaseUrl + DeviceManagementUrl + "/listdatapoints";
+        String URL = BaseUrl + GatewayManagementUrl + "/listdatapoints";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
@@ -620,7 +635,100 @@ public class DeviceControl{
     }
 
     public String ListDataPointByGroup(String json_str) {
-        String URL = BaseUrl + DeviceManagementUrl + "/listdatapointbygroup";
+        String URL = BaseUrl + GatewayManagementUrl + "/listdatapointbygroup";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        APost.ApiResponseParser(URL, json_str);
+        return APost.GetResponse();
+    }
+
+    /**
+     * log management api
+     */
+    public String RawLogQuery(String json_str) {
+        String URL = BaseUrl + LogManagementUrl + "/rawlogquery";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        APost.ApiResponseParser(URL, json_str);
+        return APost.GetResponse();
+    }
+
+    public String RawLogExport(String json_str) {
+        String URL = BaseUrl + LogManagementUrl + "/rawlogexport";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        APost.ApiResponseParser(URL, json_str);
+        return APost.GetResponse();
+    }
+
+    /**
+     * alert management api
+     */
+    public String AlertQuery(String json_str) {
+        String URL = BaseUrl + AlertManagementUrl + "/alertquery";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        APost.ApiResponseParser(URL, json_str);
+        return APost.GetResponse();
+    }
+
+    /**
+     * data management api
+     */
+    public String RawDataQuery(String json_str) {
+        String URL = BaseUrl + DataManagementUrl + "/rawdataquery";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        APost.ApiResponseParser(URL, json_str);
+        return APost.GetResponse();
+    }
+
+    public String StatsDataQuery(String json_str) {
+        String URL = BaseUrl + DataManagementUrl + "/statsdataquery";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        APost.ApiResponseParser(URL, json_str);
+        return APost.GetResponse();
+    }
+
+    public String AlertDataQuery(String json_str) {
+        String URL = BaseUrl + DataManagementUrl + "/alarmdataquery";
+        int i = json_str.indexOf("auth_token");
+        if (i == -1) {
+            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
+            String subStr = json_str.substring(0, json_str.length() - 1);
+            json_str = subStr + tmp;
+        }
+        APost.ApiResponseParser(URL, json_str);
+        return APost.GetResponse();
+    }
+
+    public String EventDataQuery(String json_str) {
+        String URL = BaseUrl + DataManagementUrl + "/eventdataquery";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
             String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
