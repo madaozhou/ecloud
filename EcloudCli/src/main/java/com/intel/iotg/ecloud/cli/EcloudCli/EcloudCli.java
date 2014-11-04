@@ -60,10 +60,41 @@ public class EcloudCli {
     private Option Filed2c;
     private Option RpcCall;
 
+    private Option AddUser;
+    private Option UserLogout;
+    private Option SetPass;
+    private Option UpdateUser;
+    private Option GetUsrInfo;
+
     private Option AddDev;
     private Option UpdateDev;
     private Option GetDevInfo;
     private Option DeleteDev;
+    private Option GetDevKey;
+
+    private Option AddGroup;
+    private Option UpdateGroup;
+    private Option GetGroupInfo;
+    private Option ListGroups;
+    private Option ListGroupPath;
+    private Option DeleteGroup;
+
+    private Option AddDataPoint;
+    private Option UpdateDataPoint;
+    private Option DeleteDataPoint;
+    private Option GetDataPointInfo;
+    private Option ListDataPoints;
+    private Option ListDataPointByGroup;
+
+    private Option RawLogQuery;
+    private Option RawLogExport;
+
+    private Option AlertQuery;
+
+    private Option RawDataQuery;
+    private Option StatsDataQuery;
+    private Option AlarmDataQuery;
+    private Option EventDataQuery;
 
     private String loginUserName;
     private String role;
@@ -939,6 +970,139 @@ public class EcloudCli {
                 .withArgName("project_id> <gateway_id")
                 .hasOptionalArgs(2)
                 .create("DeleteDev");
+        GetDevKey =
+            OptionBuilder
+                .withDescription("get device's key")
+                .withArgName("projectId> <gateway_id")
+                .hasOptionalArgs(2)
+                .create("GetDevKey");
+
+        AddUser =
+            OptionBuilder
+                .withDescription("add user ")
+                .withArgName("username> <role")
+                .hasOptionalArgs(2)
+                .create("AddUser");
+        UserLogout =
+            OptionBuilder
+                .withDescription("logout")
+                .create("UserLogout");
+        SetPass =
+            OptionBuilder
+                .withDescription("set password")
+                .withArgName("username> <password")
+                .hasOptionalArgs(2)
+                .create("SetPass");
+        UpdateUser =
+            OptionBuilder
+                .withDescription("updata user")
+                .withArgName("username> <role> <active")
+                .hasOptionalArgs(3)
+                .create("UpdateUser");
+        GetUsrInfo =
+            OptionBuilder
+                .withDescription("get user information")
+                .withArgName("username")
+                .hasOptionalArgs(1)
+                .create("GetUsrInfo");
+
+        AddGroup =
+            OptionBuilder
+                .withDescription("add group")
+                .withArgName("project_id> <name> <type> <description> <userdata> <tags> <parentgroupid")
+                .hasOptionalArgs(7)
+                .create("AddGroup");
+        UpdateGroup =
+            OptionBuilder
+                .withDescription("update group")
+                .withArgName("project_id> <group_id> <name> <type> <description> <userdata> <tags> <parentgroupid")
+                .hasOptionalArgs(8)
+                .create("UpdateGroup");
+        GetGroupInfo =
+            OptionBuilder
+                .withDescription("GetGroupInfo")
+                .withArgName("project_id> <group_id")
+                .hasOptionalArgs(2)
+                .create("GetGroupInfo");
+        ListGroups =
+            OptionBuilder
+                .withDescription("list group related to input group_id")
+                .withArgName("project_id> <group_id> <type")
+                .hasOptionalArgs(3)
+                .create("ListGroups");
+        ListGroupPath =
+            OptionBuilder
+                .withDescription("list group's hierarchy")
+                .withArgName("project_id> <group_id")
+                .hasOptionalArgs(2)
+                .create("ListGroupPath");
+        DeleteGroup =
+            OptionBuilder
+                .withDescription("delete group")
+                .withArgName("project_id> <group_id")
+                .hasOptionalArgs(2)
+                .create("DeleteGroup");
+
+        AddDataPoint =
+            OptionBuilder
+                .withDescription("add data point")
+                .withArgName("project_id> <gateway_id> <name> <datatype> <dataunit> <description> <tag> <userdata> <groupid")
+                .hasOptionalArgs(9)
+                .create("AddDataPoint");
+        UpdateDataPoint =
+            OptionBuilder
+                .withDescription("add data point")
+                .withArgName("project_id> <gateway_id> <datapoint_id> <name> <datatype> <dataunit> <description> <tag> <userdata> <groupid")
+                .hasOptionalArgs(10)
+                .create("UpdateDataPoint");
+        DeleteDataPoint =
+            OptionBuilder
+                .withDescription("delete data point")
+                .withArgName("project_id> <gateway_id> <datapoint_id")
+                .hasOptionalArgs(3)
+                .create("DeleteDataPoint");
+        GetDataPointInfo =
+            OptionBuilder
+                .withDescription("get data point information")
+                .withArgName("project_id> <gateway_id> <datapoint_id")
+                .hasOptionalArgs(3)
+                .create("GetDataPointInfo");
+        ListDataPoints =
+            OptionBuilder
+                .withDescription("list data point")
+                .withArgName("project_id> <gateway_id")
+                .hasOptionalArgs(2)
+                .create("ListDataPoints");
+        ListDataPointByGroup =
+            OptionBuilder
+                .withDescription("list data point by group")
+                .withArgName("project_id> <group_id")
+                .hasOptionalArgs(2)
+                .create("ListDataPointByGroup");
+
+        RawLogQuery =
+            OptionBuilder
+                .withDescription("raw log query")
+                .withArgName("maxdatapoints> <time_from> <time_to> <log_tag")
+                .hasOptionalArgs(4)
+                .create("RawLogQuery");
+        RawLogExport =
+            OptionBuilder
+                .withDescription("raw log export")
+                .withArgName("time_from> <time_to> <log_tag> <output")
+                .hasOptionalArgs(4)
+                .create("RawLogExport");
+
+        AlertQuery =
+            OptionBuilder
+                .withDescription("alert query")
+                .withArgName("project_id> <timeout> <last_seq")
+                .hasOptionalArgs(3)
+                .create("AlertQuery");
+
+
+
+
 
         options.addOption(help);
         options.addOption(quit);
