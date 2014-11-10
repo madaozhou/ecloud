@@ -13,12 +13,13 @@ import javax.json.*;
 
 
 public class DeviceControl{
-    private String auth_token;
+    private String auth_token = "test";
     private String username;
     private String password;
 
     private static final String BaseUrl =
-        "http://115.29.204.44:8080/ecloud/";
+        //"http://115.29.204.44:8080/ecloud/";
+        "http://lzhu11-demo01.sh.intel.com/ecloud/";
     private static final String DeviceManagementUrl = "v1/dev/ctl";
     private static final String ProjectManagementUrl = "v1/admin/project";
     private static final String GatewayManagementUrl = "v1/admin/dev";
@@ -424,7 +425,7 @@ public class DeviceControl{
         return APost.GetResponse();
     }
 
-    public String GetUserInfo(String json_str) {
+    public String GetUsrInfo(String json_str) {
         String URL = BaseUrl + UserManagementUrl + "/getusrinfo";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {
@@ -448,15 +449,10 @@ public class DeviceControl{
         return APost.GetResponse();
     }
 
-    public String UserLogout(String json_str) {
+    public String UserLogout() {
         String URL = BaseUrl + UserManagementUrl + "/userlogout";
-        int i = json_str.indexOf("auth_token");
-        if (i == -1) {
-            String tmp = ",\"auth_token\":\"" + auth_token + "\"}";
-            String subStr = json_str.substring(0, json_str.length() - 1);
-            json_str = subStr + tmp;
-        }
-        APost.ApiResponseParser(URL, json_str);
+        String tmp = "{\"auth_token\":\"" + auth_token + "\"}";
+        APost.ApiResponseParser(URL, tmp);
         return APost.GetResponse();
     }
 
@@ -715,7 +711,7 @@ public class DeviceControl{
         return APost.GetResponse();
     }
 
-    public String AlertDataQuery(String json_str) {
+    public String AlarmDataQuery(String json_str) {
         String URL = BaseUrl + DataManagementUrl + "/alarmdataquery";
         int i = json_str.indexOf("auth_token");
         if (i == -1) {

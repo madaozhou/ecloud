@@ -212,7 +212,7 @@ public class EcloudCli {
                 int retcode = dc.Login(json_str);
                 cons.setPrompt(null);
                 if (retcode == 0) {
-                    String ret = dc.GetUsrInfo(json_str);
+                    String ret = dc.GetUserInfo(json_str);
                     ByteArrayInputStream in = new ByteArrayInputStream(ret.getBytes());
                     JsonReader jsonReader = Json.createReader(in);
                     jobj = jsonReader.readObject();
@@ -568,7 +568,7 @@ public class EcloudCli {
             }
 
             /**
-             * project management
+             * project managment
              **/
 
             if (cl.hasOption("ListProjects")) {
@@ -689,9 +689,6 @@ public class EcloudCli {
                     if (argsArray == null || argsArray.length < 3) {
                         argsArray = new String[3];
                         argsArray[0] = getProjId();
-                        argsArray[1] = "*";
-                        argsArray[2] = "*";
-                        ListGroups(argsArray);
                         argsArray[1] = guide("group_id");
                         argsArray[2] = guide("type");
                     }
@@ -719,7 +716,7 @@ public class EcloudCli {
             }
 
             /**
-             * user management
+             * user managment
              **/
 
             if (cl.hasOption("AddUser")) {
@@ -797,7 +794,7 @@ public class EcloudCli {
             }
 
             /**
-             * group management
+             * group managment
              **/
 
             if (cl.hasOption("AddGroup")) {
@@ -827,9 +824,6 @@ public class EcloudCli {
                     if (argsArray == null || argsArray.length < 8) {
                         argsArray = new String[8];
                         argsArray[0] = getProjId();
-                        argsArray[1] = "*";
-                        argsArray[2] = "*";
-                        ListGroups(argsArray);
                         argsArray[1] = guide("group_id");
                         argsArray[2] = guide("name");
                         argsArray[3] = guide("type");
@@ -850,14 +844,12 @@ public class EcloudCli {
                 try {
                     String argsArray[] = cl.getOptionValues("GetGroupInfo");
                     if (argsArray == null || argsArray.length < 2) {
-                        argsArray = new String[3];
-                        argsArray[0] = getProjId();
-                        argsArray[1] = "*";
-                        argsArray[2] = "*";
-                        ListGroups(argsArray);
-                        argsArray[1] = guide("group_id");
+                        String projectId = getProjId();
+                        argsArray = new String[2];
+                        argsArray[0] = projectId;
+                        argsArray[1] = DeviceId;
                     }
-                    return GetGroupInfo(argsArray);
+                    return GetDevInfo(argsArray);
                 } catch (IllegalStateException e) {
                     System.err.println(e.getMessage());
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -865,35 +857,21 @@ public class EcloudCli {
                 }
                 return 1;
             }
-            if (cl.hasOption("ListGroups")) {
+            if (cl.hasOption("DeleteDev")) {
                 try {
-                    String argsArray[] = cl.getOptionValues("ListGroups");
-                    if (argsArray == null || argsArray.length < 3) {
-                        argsArray = new String[3];
-                        argsArray[0] = getProjId();
-                        argsArray[1] = guide("group_id");
-                        argsArray[2] = guide("type");
-                    }
-                    return ListGroups(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            if (cl.hasOption("ListGroupPath")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("ListGroupPath");
+                    String argsArray[] = cl.getOptionValues("DeleteDev");
                     if (argsArray == null || argsArray.length < 2) {
-                        argsArray = new String[3];
-                        argsArray[0] = getProjId();
-                        argsArray[1] = "*";
-                        argsArray[2] = "*";
-                        ListGroups(argsArray);
-                        argsArray[1] = guide("group_id");
+                        String projectId = getProjId();
+                        String fakeArgs[];
+                        fakeArgs = new String[1];
+                        fakeArgs[0] = projectId;
+                        ListDevInProject(fakeArgs);
+                        String DeviceId = getDeviceId();
+                        argsArray = new String[2];
+                        argsArray[0] = projectId;
+                        argsArray[1] = DeviceId;
                     }
-                    return ListGroupPath(argsArray);
+                    return DeleteDev(argsArray);
                 } catch (IllegalStateException e) {
                     System.err.println(e.getMessage());
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -901,28 +879,15 @@ public class EcloudCli {
                 }
                 return 1;
             }
-            if (cl.hasOption("DeleteGroup")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("DeleteGroup");
-                    if (argsArray == null || argsArray.length < 2) {
-                        argsArray = new String[3];
-                        argsArray[0] = getProjId();
-                        argsArray[1] = "*";
-                        argsArray[2] = "*";
-                        ListGroups(argsArray);
-                        argsArray[1] = guide("group_id");
-                    }
-                    return DeleteGroup(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
+        } catch (ParseException e) {
+            System.err.println("Parsing failed. Reason: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return 1;
 
             /**
-             * gateway management
+             * gateway managment
              **/
 
             if (cl.hasOption("AddDev")) {
@@ -1007,303 +972,6 @@ public class EcloudCli {
                         argsArray[1] = DeviceId;
                     }
                     return DeleteDev(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            if (cl.hasOption("GetDevKey")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("GetDevKey");
-                    if (argsArray == null || argsArray.length < 2) {
-                        String projectId = getProjId();
-                        String fakeArgs[];
-                        fakeArgs = new String[1];
-                        fakeArgs[0] = projectId;
-                        ListDevInProject(fakeArgs);
-                        String DeviceId = getDeviceId();
-                        argsArray = new String[2];
-                        argsArray[0] = projectId;
-                        argsArray[1] = DeviceId;
-                    }
-                    return GetDevKey(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-
-            /**
-             * data point management
-             **/
-
-            if (cl.hasOption("AddDataPoint")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("AddDataPoint");
-                    if (argsArray == null || argsArray.length < 9) {
-                        String projectId = getProjId();
-                        String fakeArgs[];
-                        fakeArgs = new String[1];
-                        fakeArgs[0] = projectId;
-                        ListDevInProject(fakeArgs);
-                        String DeviceId = getDeviceId();
-                        argsArray = new String[9];
-                        argsArray[0] = projectId;
-                        argsArray[1] = DeviceId;
-                        argsArray[2] = guide("name");
-                        argsArray[3] = guide("datatype");
-                        argsArray[4] = guide("dataunit");
-                        argsArray[5] = guide("description");
-                        argsArray[6] = guide("tag");
-                        argsArray[7] = guide("userdata");
-                        argsArray[8] = guide("groupid");
-                    }
-                    return AddDataPoint(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            if (cl.hasOption("UpdateDataPoint")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("AddDataPoint");
-                    if (argsArray == null || argsArray.length < 10) {
-                        String projectId = getProjId();
-                        String fakeArgs[];
-                        fakeArgs = new String[1];
-                        fakeArgs[0] = projectId;
-                        ListDevInProject(fakeArgs);
-                        String DeviceId = getDeviceId();
-                        argsArray = new String[10];
-                        argsArray[0] = projectId;
-                        argsArray[1] = DeviceId;
-                        ListDataPoints(argsArray);
-                        argsArray[2] = guide("datapoint_id");
-                        argsArray[3] = guide("name");
-                        argsArray[4] = guide("datatype");
-                        argsArray[5] = guide("dataunit");
-                        argsArray[6] = guide("description");
-                        argsArray[7] = guide("tag");
-                        argsArray[8] = guide("userdata");
-                        argsArray[9] = guide("groupid");
-                    }
-                    return AddDataPoint(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            if (cl.hasOption("DeleteDataPoint")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("DeleteDataPoint");
-                    if (argsArray == null || argsArray.length < 3) {
-                        String projectId = getProjId();
-                        String fakeArgs[];
-                        fakeArgs = new String[1];
-                        fakeArgs[0] = projectId;
-                        ListDevInProject(fakeArgs);
-                        String DeviceId = getDeviceId();
-                        argsArray = new String[3];
-                        argsArray[0] = projectId;
-                        argsArray[1] = DeviceId;
-                        ListDataPoints(argsArray);
-                        argsArray[2] = guide("datapoint_id");
-                    }
-                    return DeleteDataPoint(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            if (cl.hasOption("GetDataPointInfo")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("GetDataPointInfo");
-                    if (argsArray == null || argsArray.length < 3) {
-                        String projectId = getProjId();
-                        String fakeArgs[];
-                        fakeArgs = new String[1];
-                        fakeArgs[0] = projectId;
-                        ListDevInProject(fakeArgs);
-                        String DeviceId = getDeviceId();
-                        argsArray = new String[3];
-                        argsArray[0] = projectId;
-                        argsArray[1] = DeviceId;
-                        ListDataPoints(argsArray);
-                        argsArray[2] = guide("datapoint_id");
-                    }
-                    return GetDataPointInfo(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            if (cl.hasOption("ListDataPoints")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("ListDataPoints");
-                    if (argsArray == null || argsArray.length < 2) {
-                        String projectId = getProjId();
-                        String fakeArgs[];
-                        fakeArgs = new String[1];
-                        fakeArgs[0] = projectId;
-                        ListDevInProject(fakeArgs);
-                        String DeviceId = getDeviceId();
-                        argsArray = new String[3];
-                        argsArray[0] = projectId;
-                        argsArray[1] = DeviceId;
-                    }
-                    return ListDataPoints(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            if (cl.hasOption("ListDataPointByGroup")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("ListDataPointByGroup");
-                    if (argsArray == null || argsArray.length < 2) {
-                        argsArray = new String[3];
-                        argsArray[0] = getProjId();
-                        argsArray[1] = "*";
-                        argsArray[2] = "*";
-                        ListGroups(argsArray);
-                        argsArray[1] = guide("group_id");
-                    }
-                    return ListDataPointByGroup(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            /**
-             * log management
-             **/
-
-            if (cl.hasOption("RawLogQuery")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("RawLogQuery");
-                    if (argsArray == null || argsArray.length < 4) {
-                        argsArray = new String[4];
-                        argsArray[0] = guide("maxdatapoints");
-                        argsArray[1] = guide("time_from");
-                        argsArray[2] = guide("time_to");
-                        argsArray[3] = guide("log_tag");
-                    }
-                    return RawLogQuery(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            if (cl.hasOption("RawLogExport")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("RawLogExport");
-                    if (argsArray == null || argsArray.length < 4) {
-                        argsArray = new String[4];
-                        argsArray[0] = guide("time_from");
-                        argsArray[1] = guide("time_to");
-                        argsArray[2] = guide("log_tag");
-                        argsArray[3] = guide("output");
-                    }
-                    return RawLogExport(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            /**
-             * data management
-             **/
-
-            if (cl.hasOption("RawDataQuery")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("RawDataQuery");
-                    if (argsArray == null || argsArray.length < 6) {
-                        argsArray = new String[6];
-                        argsArray[0] = guide("maxdatapoints");
-                        argsArray[1] = guide("time_from");
-                        argsArray[2] = guide("time_to");
-                        argsArray[3] = guide("project_id");
-                        argsArray[4] = guide("gateway_id");
-                        argsArray[5] = guide("datapoint_id");
-                    }
-                    return RawDataQuery(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            if (cl.hasOption("StatsDataQuery")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("StatsDataQuery");
-                    if (argsArray == null || argsArray.length < 5) {
-                        argsArray = new String[5];
-                        argsArray[0] = guide("maxdatapoints");
-                        argsArray[1] = guide("time_from");
-                        argsArray[2] = guide("time_to");
-                        argsArray[3] = guide("project_id");
-                        argsArray[4] = guide("stats_id");
-                    }
-                    return StatsDataQuery(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            if (cl.hasOption("AlarmDataQuery")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("AlarmDataQuery");
-                    if (argsArray == null || argsArray.length < 5) {
-                        argsArray = new String[5];
-                        argsArray[0] = guide("maxdatapoints");
-                        argsArray[1] = guide("time_from");
-                        argsArray[2] = guide("time_to");
-                        argsArray[3] = guide("project_id");
-                        argsArray[4] = guide("tag");
-                    }
-                    return AlarmDataQuery(argsArray);
-                } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("lack of args.");
-                }
-                return 1;
-            }
-            if (cl.hasOption("EventDataQuery")) {
-                try {
-                    String argsArray[] = cl.getOptionValues("EventDataQuery");
-                    if (argsArray == null || argsArray.length < 5) {
-                        argsArray = new String[5];
-                        argsArray[0] = guide("maxdatapoints");
-                        argsArray[1] = guide("time_from");
-                        argsArray[2] = guide("time_to");
-                        argsArray[3] = guide("project_id");
-                        argsArray[4] = guide("tag");
-                    }
-                    return EventDataQuery(argsArray);
                 } catch (IllegalStateException e) {
                     System.err.println(e.getMessage());
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -1659,7 +1327,6 @@ public class EcloudCli {
         options.addOption(help);
         options.addOption(quit);
         options.addOption(Login);
-
         options.addOption(GetVer);
         options.addOption(GetCfg);
         options.addOption(SetCfg);
@@ -1674,7 +1341,6 @@ public class EcloudCli {
         options.addOption(Filec2d);
         options.addOption(Filed2c);
         options.addOption(RpcCall);
-
         options.addOption(ListProjects);
         options.addOption(AddProject);
         options.addOption(GetProjectInfo);
@@ -1684,40 +1350,10 @@ public class EcloudCli {
         options.addOption(ListDevInProject);
         options.addOption(ListDevByGroup);
         options.addOption(GetProjectStats);
-
         options.addOption(AddDev);
         options.addOption(UpdateDev);
         options.addOption(GetDevInfo);
         options.addOption(DeleteDev);
-        options.addOption(GetDevKey);
-
-        options.addOption(AddUser);
-        options.addOption(UserLogout);
-        options.addOption(SetPass);
-        options.addOption(UpdateUser);
-        options.addOption(GetUsrInfo);
-
-        options.addOption(AddGroup);
-        options.addOption(UpdateGroup);
-        options.addOption(GetGroupInfo);
-        options.addOption(ListGroups);
-        options.addOption(ListGroupPath);
-        options.addOption(DeleteGroup);
-
-        options.addOption(AddDataPoint);
-        options.addOption(UpdateDataPoint);
-        options.addOption(DeleteDataPoint);
-        options.addOption(GetDataPointInfo);
-        options.addOption(ListDataPoints);
-        options.addOption(ListDataPointByGroup);
-
-        options.addOption(RawLogQuery);
-        options.addOption(RawLogExport);
-
-        options.addOption(RawDataQuery);
-        options.addOption(StatsDataQuery);
-        options.addOption(AlarmDataQuery);
-        options.addOption(EventDataQuery);
         formatter = new HelpFormatter();
     }
 
@@ -1858,9 +1494,9 @@ public class EcloudCli {
             jobj = jsonReader.readObject();
             int retcode = jobj.getInt("retcode", -1);
             if (retcode == 0) {
-                String cfg = jobj.getString("config");
+                String cfg = jobj.getString("cfg");
                 System.out.println("---------------------------------------");
-                System.out.println("config : " + cfg);
+                System.out.println("cfg : " + cfg);
                 System.out.println("---------------------------------------");
                 System.out.println();
             }
@@ -1986,7 +1622,7 @@ public class EcloudCli {
             int retcode = jobj.getInt("retcode", -1);
             if (retcode == 0) {
                 System.out.println("---------------------------------------");
-                System.out.println(jobj.getString("data"));
+                System.out.println("Success.");
                 System.out.println("---------------------------------------");
                 System.out.println();
             }
@@ -2056,7 +1692,7 @@ public class EcloudCli {
             int retcode = jobj.getInt("retcode", -1);
             if (retcode == 0) {
                 System.out.println("---------------------------------------");
-                System.out.println(jobj.getString("data"));
+                System.out.println(argsArray[2] + " started.");
                 System.out.println("---------------------------------------");
                 System.out.println();
             }
@@ -2087,7 +1723,7 @@ public class EcloudCli {
             int retcode = jobj.getInt("retcode", -1);
             if (retcode == 0) {
                 System.out.println("---------------------------------------");
-                System.out.println(jobj.getString("data"));
+                System.out.println(argsArray[2] + " stoped.");
                 System.out.println("---------------------------------------");
                 System.out.println();
             }
@@ -2119,7 +1755,6 @@ public class EcloudCli {
             if (retcode == 0) {
                 System.out.println("---------------------------------------");
                 System.out.println("App installed");
-                System.out.println(jobj.getString("data"));
                 System.out.println("---------------------------------------");
                 System.out.println();
             }
@@ -2264,7 +1899,7 @@ public class EcloudCli {
     }
 
     /**
-     * project management
+     * project managment
      **/
 
     private int AddProject(String argsArray[]) {
@@ -2423,7 +2058,7 @@ public class EcloudCli {
 
     private int ListDevInProject(String argsArray[]) {
         try {
-            String filter = "*";
+            String filter = "";
             if (argsArray.length == 2) {
                 filter = argsArray[1];
             }
@@ -2465,24 +2100,7 @@ public class EcloudCli {
                 .add("project_id", argsArray[0])
                 .add("group_id", argsArray[1])
                 .build();
-            String retStr = dc.ListDevByGroup(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                JsonArray gateways = jobj.getJsonArray("gateways");
-                Iterator<JsonValue> iter = gateways.iterator();
-                System.out.println("---------------------------------------");
-                while (iter.hasNext()) {
-                    System.out.println(iter.next().toString());
-                }
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
+            dc.ListDevByGroup(jobj.toString());
         } catch (JsonException e) {
             System.err.println(e.getMessage());
         } catch (IllegalStateException e) {
@@ -2524,7 +2142,7 @@ public class EcloudCli {
     }
 
     /**
-     * user management
+     * user managment
      **/
 
     private int AddUser(String argsArray[]) {
@@ -2670,7 +2288,7 @@ public class EcloudCli {
         return 1;
     }
     /**
-     * group management
+     * group managment
      **/
 
     private int AddGroup(String argsArray[]) {
@@ -2746,14 +2364,15 @@ public class EcloudCli {
         try {
             JsonObject jobj = Json.createObjectBuilder()
                 .add("project_id", argsArray[0])
-                .add("group_id", argsArray[1])
+                .add("gateway_id", argsArray[1])
                 .build();
-            String retStr = dc.GetGroupInfo(jobj.toString());
+            String retStr = dc.GetDevInfo(jobj.toString());
             ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
             JsonReader jsonReader = Json.createReader(in);
             jobj = jsonReader.readObject();
             int retcode = jobj.getInt("retcode", -1);
             if (retcode == 0) {
+                //jobj.remove("retcode");
                 System.out.println("---------------------------------------");
                 System.out.println(jobj.toString());
                 System.out.println("---------------------------------------");
@@ -2771,107 +2390,8 @@ public class EcloudCli {
         }
         return 1;
     }
-
-    private int ListGroups(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("project_id", argsArray[0])
-                .add("group_id", argsArray[1])
-                .add("type", argsArray[2])
-                .build();
-            String retStr = dc.ListGroups(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                JsonArray projects = jobj.getJsonArray("groups");
-                Iterator<JsonValue> iter = projects.iterator();
-                System.out.println("---------------------------------------");
-                while (iter.hasNext()) {
-                    System.out.println(iter.next().toString());
-                }
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int ListGroupPath(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("project_id", argsArray[0])
-                .add("group_id", argsArray[1])
-                .build();
-            String retStr = dc.ListGroupPath(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                JsonArray projects = jobj.getJsonArray("path");
-                Iterator<JsonValue> iter = projects.iterator();
-                System.out.println("---------------------------------------");
-                while (iter.hasNext()) {
-                    System.out.println(iter.next().toString());
-                }
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int DeleteGroup(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("project_id", argsArray[0])
-                .add("group_id", argsArray[1])
-                .build();
-            String retStr = dc.AddGroup(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                System.out.println("---------------------------------------");
-                System.out.println("Success.");
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
     /**
-     * gateway management
+     * gateway managment
      **/
 
     private int AddDev(String argsArray[]) {
@@ -2892,9 +2412,8 @@ public class EcloudCli {
             jobj = jsonReader.readObject();
             int retcode = jobj.getInt("retcode", -1);
             if (retcode == 0) {
-                String gateway_id = jobj.getString("gateway_id");
                 System.out.println("---------------------------------------");
-                System.out.println("added gateway_id : " + gateway_id);
+                System.out.println("Success.");
                 System.out.println("---------------------------------------");
                 System.out.println();
             }
@@ -2998,450 +2517,6 @@ public class EcloudCli {
             if (retcode == 0) {
                 System.out.println("---------------------------------------");
                 System.out.println(argsArray[1] + " is deleted.");
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int GetDevKey(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("project_id", argsArray[0])
-                .add("gateway_id", argsArray[1])
-                .build();
-            String retStr = dc.GetDevKey(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                String devkey = jobj.getString("devkey");
-                System.out.println("---------------------------------------");
-                System.out.println("device's key: " + devkey);
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-    /**
-     * data point management
-     **/
-
-    private int AddDataPoint(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("project_id", argsArray[0])
-                .add("gateway_id", argsArray[1])
-                .add("name", argsArray[2])
-                .add("datatype", argsArray[3])
-                .add("dataunit", argsArray[4])
-                .add("description", argsArray[5])
-                .add("tag", argsArray[6])
-                .add("userdata", argsArray[7])
-                .add("groupid", argsArray[8])
-                .build();
-            String retStr = dc.AddDataPoint(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                String datapoint_id = jobj.getString("datapoint_id");
-                System.out.println("---------------------------------------");
-                System.out.println("added datapoint_id : " + datapoint_id);
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int UpdateDataPoint(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("project_id", argsArray[0])
-                .add("gateway_id", argsArray[1])
-                .add("datapoint_id", argsArray[2])
-                .add("name", argsArray[3])
-                .add("datatype", argsArray[4])
-                .add("dataunit", argsArray[5])
-                .add("description", argsArray[6])
-                .add("tag", argsArray[7])
-                .add("userdata", argsArray[8])
-                .add("groupid", argsArray[9])
-                .build();
-            String retStr = dc.UpdateDataPoint(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                System.out.println("---------------------------------------");
-                System.out.println("Success.");
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int DeleteDataPoint(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("project_id", argsArray[0])
-                .add("gateway_id", argsArray[1])
-                .add("datapoint_id", argsArray[2])
-                .build();
-            String retStr = dc.DeleteDataPoint(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                System.out.println("---------------------------------------");
-                System.out.println("Success.");
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int GetDataPointInfo(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("project_id", argsArray[0])
-                .add("gateway_id", argsArray[1])
-                .add("datapoint_id", argsArray[2])
-                .build();
-            String retStr = dc.GetDataPointInfo(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                System.out.println("---------------------------------------");
-                System.out.println(jobj.toString());
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int ListDataPoints(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("project_id", argsArray[0])
-                .add("gateway_id", argsArray[1])
-                .build();
-            String retStr = dc.ListDataPoints(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                JsonArray projects = jobj.getJsonArray("datapoints");
-                Iterator<JsonValue> iter = projects.iterator();
-                System.out.println("---------------------------------------");
-                while (iter.hasNext()) {
-                    System.out.println(iter.next().toString());
-                }
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int ListDataPointByGroup(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("project_id", argsArray[0])
-                .add("group_id", argsArray[1])
-                .build();
-            String retStr = dc.ListDataPointByGroup(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                JsonArray projects = jobj.getJsonArray("datapoints");
-                Iterator<JsonValue> iter = projects.iterator();
-                System.out.println("---------------------------------------");
-                while (iter.hasNext()) {
-                    System.out.println(iter.next().toString());
-                }
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-    /**
-     * log management
-     **/
-
-    private int RawLogQuery(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("maxdatapoints", argsArray[0])
-                .add("time_from", argsArray[1])
-                .add("time_to", argsArray[2])
-                .add("log_tag", argsArray[3])
-                .build();
-            String retStr = dc.RawLogQuery(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                System.out.println("---------------------------------------");
-                System.out.println(jobj.toString());
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int RawLogExport(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("time_from", argsArray[0])
-                .add("time_to", argsArray[1])
-                .add("log_tag", argsArray[2])
-                .add("output", argsArray[3])
-                .build();
-            String retStr = dc.RawLogExport(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                System.out.println("---------------------------------------");
-                System.out.println("URL : " + jobj.getString("data"));
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    /**
-     * data management
-     **/
-
-    private int RawDataQuery(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("maxdatapoints", argsArray[0])
-                .add("time_from", argsArray[1])
-                .add("time_to", argsArray[2])
-                .add("project_id", argsArray[3])
-                .add("gateway_id", argsArray[4])
-                .add("datapoint_id", argsArray[5])
-                .build();
-            String retStr = dc.RawDataQuery(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                System.out.println("---------------------------------------");
-                System.out.println(jobj.toString());
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int StatsDataQuery(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("maxdatapoints", argsArray[0])
-                .add("time_from", argsArray[1])
-                .add("time_to", argsArray[2])
-                .add("project_id", argsArray[3])
-                .add("stats_id", argsArray[4])
-                .build();
-            String retStr = dc.StatsDataQuery(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                System.out.println("---------------------------------------");
-                System.out.println(jobj.toString());
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int AlarmDataQuery(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("maxdatapoints", argsArray[0])
-                .add("time_from", argsArray[1])
-                .add("time_to", argsArray[2])
-                .add("project_id", argsArray[3])
-                .add("tag", argsArray[4])
-                .build();
-            String retStr = dc.AlarmDataQuery(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                System.out.println("---------------------------------------");
-                System.out.println(jobj.toString());
-                System.out.println("---------------------------------------");
-                System.out.println();
-            }
-            else {
-                CodePaser(retcode);
-            }
-        } catch (JsonException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalStateException e) {
-            System.err.println(e.getMessage());
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("lack of args.");
-        }
-        return 1;
-    }
-
-    private int EventDataQuery(String argsArray[]) {
-        try {
-            JsonObject jobj = Json.createObjectBuilder()
-                .add("maxdatapoints", argsArray[0])
-                .add("time_from", argsArray[1])
-                .add("time_to", argsArray[2])
-                .add("project_id", argsArray[3])
-                .add("tag", argsArray[4])
-                .build();
-            String retStr = dc.EventDataQuery(jobj.toString());
-            ByteArrayInputStream in = new ByteArrayInputStream(retStr.getBytes());
-            JsonReader jsonReader = Json.createReader(in);
-            jobj = jsonReader.readObject();
-            int retcode = jobj.getInt("retcode", -1);
-            if (retcode == 0) {
-                System.out.println("---------------------------------------");
-                System.out.println(jobj.toString());
                 System.out.println("---------------------------------------");
                 System.out.println();
             }

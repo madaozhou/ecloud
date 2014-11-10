@@ -30,7 +30,7 @@ public class Post {
     private String api_qid;
     private int time_out;
 
-    private String auth_token;
+    private String auth_token = "test";
     private String username;
     private String password;
     private String login_id;
