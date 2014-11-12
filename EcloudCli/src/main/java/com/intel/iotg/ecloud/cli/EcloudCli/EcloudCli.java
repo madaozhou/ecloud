@@ -31,6 +31,10 @@ public class EcloudCli {
     private HelpFormatter formatter;
     private DeviceControl dc;
 
+    private String promptInfo = "Ecloud$ ";
+    private String access;
+    private boolean isSystemAdmin;
+
     private Option help;
     private Option quit;
     private Option Login;
@@ -170,7 +174,7 @@ public class EcloudCli {
                 System.out.println("Hi, welcome to Ecloud!");
                 System.out.println("enter -help for help.");
                 PrintWriter writer = new PrintWriter(cli.cons.getOutput());
-                cli.cons.setPrompt("Ecloud ");
+                cli.cons.setPrompt("Ecloud$ ");
                 while (true) {
                     String str1 = cli.cons.readLine();
                     String[] inputArgs = str1.split(" ");
@@ -201,7 +205,7 @@ public class EcloudCli {
                 loginUserName = username;
                 cons.setPrompt(null);
                 String password = cons.readLine("password:", '*');
-                cons.setPrompt("Ecloud ");
+                cons.setPrompt("Ecloud$ ");
                 dc.setUserName(username);
                 dc.setPassWord(password);
                 String json_str;
@@ -217,12 +221,19 @@ public class EcloudCli {
                     JsonReader jsonReader = Json.createReader(in);
                     jobj = jsonReader.readObject();
                     role = jobj.getString("role");
+                    int index = role.indexOf(",");
+                    access = role.substring(0, index);
+                    if (role.equals("system"))
+                        isSystemAdmin = true;
+                    else
+                        isSystemAdmin = false;
+                    promptInfo = "Ecloud[" + username + "-" + access + "]$ ";
                     System.out.println("Login success, enter -ListProjects to get project list.");
                 }
                 else {
                     System.out.println("Login fail!");
                 }
-                cons.setPrompt("Ecloud ");
+                cons.setPrompt(promptInfo);
                 return 1;
             }
 
@@ -240,7 +251,6 @@ public class EcloudCli {
                         fakeArgs[0] = projectId;
                         ListDevInProject(fakeArgs);
                         String DeviceId = getDeviceId();
-                        argsArray = new String[2];
                         argsArray[0] = projectId;
                         argsArray[1] = DeviceId;
                     }
@@ -1767,7 +1777,7 @@ public class EcloudCli {
 
     private String getProjId() {
         System.out.println("your role is : " + role);
-        return guide("project_id");
+        return isSystemAdmin ? guide("project_id") : access;
     }
 
     private String getDeviceId() {
