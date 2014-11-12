@@ -13,12 +13,16 @@ import java.io.InputStreamReader;
 import java.io.ByteArrayInputStream;
 
 import jline.console.ConsoleReader;
+import jline.console.UserInterruptException;
 import jline.console.completer.Completer;
 import jline.console.completer.FileNameCompleter;
 import jline.console.completer.StringsCompleter;
 
 import org.apache.commons.cli.*;
 import org.apache.commons.cli.Options;
+
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
 
 import javax.json.*;
 
@@ -102,6 +106,8 @@ public class EcloudCli {
 
     private String loginUserName;
     private String role;
+
+    private SignalHandler handler;
 
     public static void main(String[] args) {
         EcloudCli cli = new EcloudCli();
@@ -200,10 +206,10 @@ public class EcloudCli {
                 return 0;
             }
             if (cl.hasOption("Login")) {
-                cons.setPrompt("username:");
-                String username = cons.readLine();
-                loginUserName = username;
                 cons.setPrompt(null);
+                String username;
+                username = cons.readLine("username:");
+                loginUserName = username;
                 String password = cons.readLine("password:", '*');
                 cons.setPrompt("Ecloud$ ");
                 dc.setUserName(username);
@@ -1330,6 +1336,7 @@ public class EcloudCli {
     }
 
     public EcloudCli() {
+        interuptHandler();
         dc = new DeviceControl();
         options = new Options();
         help =
@@ -1764,14 +1771,15 @@ public class EcloudCli {
      **/
 
     private String guide(String output) {
-        System.out.println("please enter " + output);
+        cons.setPrompt(null);
         String ret = "";
         try {
-            ret = cons.readLine();
+            ret  = cons.readLine("please enter " + output + ":");
         }
         catch (IOException e) {
             System.err.println(e.getMessage());
         }
+        cons.setPrompt(promptInfo);
         return ret;
     }
 
@@ -2579,6 +2587,7 @@ public class EcloudCli {
                 System.out.println("Success.");
                 System.out.println("---------------------------------------");
                 System.out.println();
+                promptInfo = "Ecloud &";
             }
             else {
                 CodePaser(retcode);
@@ -3466,5 +3475,14 @@ public class EcloudCli {
             System.err.println("lack of args.");
         }
         return 1;
+    }
+
+    private void interuptHandler() {
+        handler = new SignalHandler() {
+            @Override
+            public void handle(Signal signal) {
+            }
+        };
+        Signal.handle(new Signal("INT"), handler);
     }
 }
