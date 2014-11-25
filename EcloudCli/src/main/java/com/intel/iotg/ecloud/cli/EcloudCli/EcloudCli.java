@@ -206,10 +206,16 @@ public class EcloudCli {
                 return 0;
             }
             if (cl.hasOption("Login")) {
-                cons.setPrompt(null);
+                cons.setPrompt("username:");
                 String username;
-                username = cons.readLine("username:");
+                try {
+                    username = cons.readLine();
+                } catch (UserInterruptException e) {
+                    System.out.println("catch ctrl+C");
+                    return 1;
+                }
                 loginUserName = username;
+                cons.setPrompt(null);
                 String password = cons.readLine("password:", '*');
                 cons.setPrompt("Ecloud$ ");
                 dc.setUserName(username);
@@ -618,6 +624,7 @@ public class EcloudCli {
                 return 1;
             }
             if (cl.hasOption("AddProject")) {
+                interuptHandler();
                 try {
                     String argsArray[] = cl.getOptionValues("AddProject");
                     if (argsArray == null || argsArray.length < 4) {
@@ -1336,7 +1343,7 @@ public class EcloudCli {
     }
 
     public EcloudCli() {
-        interuptHandler();
+        //interuptHandler();
         dc = new DeviceControl();
         options = new Options();
         help =
@@ -3481,6 +3488,7 @@ public class EcloudCli {
         handler = new SignalHandler() {
             @Override
             public void handle(Signal signal) {
+                System.out.println("Ignore");
             }
         };
         Signal.handle(new Signal("INT"), handler);
