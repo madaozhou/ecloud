@@ -1,3 +1,19 @@
+<!--
+EcloudCli.java is implementation of command line interface.
+DeviceControl.java is the wrapper of energy data cloud api(v0.6.2).
+Post.java is the implementation of HTTP POST.
+
+To build, you need to have Maven 2 installed.
+To compile, run:
+    mvn compile
+To build the jars, run:
+    mvn assembly:assembly
+To run cli, run:
+    java -jar target/EcloudCli-1.0-SNAPSHOT.jar
+Startup:
+    Ecloud provide "test" as the default token, users should enter -Login and enter username and password.
+-->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
